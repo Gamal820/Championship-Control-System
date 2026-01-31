@@ -1,0 +1,35 @@
+.auth-card {
+    max-width: 420px;
+    margin: 40px auto;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 8px 25px rgba(0,0,0,.08);
+    background: #fff;
+}
+
+.auth-title {
+    text-align: center;
+    font-weight: 700;
+    margin-bottom: 20px;
+}
+
+.auth-subtitle {
+    text-align: center;
+    color: #6c757d;
+    margin-bottom: 25px;
+}
+
+.form-control {
+    border-radius: 10px;
+}
+
+.btn-main {
+    background-color: #0d6efd;
+    border-radius: 10px;
+    font-weight: 600;
+}
+
+.auth-links {
+    text-align: center;
+    margin-top: 15px;
+}

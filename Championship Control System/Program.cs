@@ -1,3 +1,7 @@
+using Championship_Control_System.Utitlies.DBInitilizer;
+using Championship_Control_System;
+using Microsoft.EntityFrameworkCore;
+
 namespace Championship_Control_System
 {
     public class Program
@@ -9,7 +13,21 @@ namespace Championship_Control_System
             // Add services to the container.
             builder.Services.AddControllersWithViews();
 
+            var connectionString =
+                    builder.Configuration.GetConnectionString("DefaultConnection")
+                        ?? throw new InvalidOperationException("Connection string"
+                        + "'DefaultConnection' not found.");
+
+            builder.Services.RegisterConfig(connectionString);
+
+           
+            
+
             var app = builder.Build();
+
+            var scope = app.Services.CreateScope();
+            var service = scope.ServiceProvider.GetService<IDBInitializer>();
+            service!.Initialize();
 
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
@@ -27,7 +45,7 @@ namespace Championship_Control_System
             app.MapStaticAssets();
             app.MapControllerRoute(
                 name: "default",
-                pattern: "{controller=Home}/{action=Index}/{id?}")
+                pattern: "{area=Identity}/{controller=Account}/{action=Login}/{id?}")
                 .WithStaticAssets();
 
             app.Run();

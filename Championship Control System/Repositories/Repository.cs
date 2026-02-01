@@ -2,81 +2,85 @@
 using Championship_Control_System.Repositories.IRepositories;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
-using System.Threading.Tasks;
 
 namespace Championship_Control_System.Repositories
 {
     public class Repository<T> : IRepository<T> where T : class
     {
-        private ApplicationDbContext _context;// = new();
-        private DbSet<T> _dbSet;
+        private readonly ApplicationDbContext _context;
+        private readonly DbSet<T> _db;
 
         public Repository(ApplicationDbContext context)
         {
             _context = context;
-            _dbSet = _context.Set<T>();
+            _db = _context.Set<T>();
         }
-
-        // CRUD
 
         public async Task<T> AddAsync(T entity, CancellationToken cancellationToken = default)
         {
-            var result = await _dbSet.AddAsync(entity, cancellationToken);
+            var result = await _db.AddAsync(entity, cancellationToken);
             return result.Entity;
         }
+
         public void Update(T entity)
         {
-            _dbSet.Update(entity);
-        }
-        public void Delete(T entity)
-        {
-            _dbSet.Remove(entity);
+            _db.Update(entity);
         }
 
+        public void Delete(T entity)
+        {
+            _db.Remove(entity);
+        }
+
+      
         public async Task<IEnumerable<T>> GetAsync(
             Expression<Func<T, bool>>? expression = null,
-            Expression<Func<T, object>>[]? includes = null,
+            Func<IQueryable<T>, IQueryable<T>>? include = null, 
             bool tracked = true,
             CancellationToken cancellationToken = default)
         {
-            var entities = _dbSet.AsQueryable();
+            IQueryable<T> query = _db;
 
             if (expression is not null)
-                entities = entities.Where(expression);
+                query = query.Where(expression);
 
-            if (includes is not null)
+            if (include is not null)
             {
-                foreach (var item in includes)
-                    entities = entities.Include(item);
+                query = include(query);
             }
 
             if (!tracked)
-                entities = entities.AsNoTracking();
+                query = query.AsNoTracking();
 
-            //entities = entities.Where(e => e.Status);
-
-            return await entities.ToListAsync(cancellationToken);
+            return await query.ToListAsync(cancellationToken);
         }
 
+       
         public async Task<T?> GetOneAsync(
             Expression<Func<T, bool>>? expression = null,
-            Expression<Func<T, object>>[]? includes = null,
+            Func<IQueryable<T>, IQueryable<T>>? include = null, 
             bool tracked = true,
             CancellationToken cancellationToken = default)
         {
-            return (await GetAsync(expression, includes, tracked, cancellationToken)).FirstOrDefault();
+            IQueryable<T> query = _db;
+
+            if (expression is not null)
+                query = query.Where(expression);
+
+            if (include is not null)
+            {
+                query = include(query);
+            }
+
+            if (!tracked)
+                query = query.AsNoTracking();
+
+            return await query.FirstOrDefaultAsync(cancellationToken);
         }
 
-        public async Task CommitAsync(CancellationToken cancellationToken = default)
+        public async Task CommitAsync(CancellationToken cancellationToken)
         {
-            try
-            {
-                await _context.SaveChangesAsync(cancellationToken);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error: {ex.Message}");
-            }
+            await _context.SaveChangesAsync(cancellationToken);
         }
     }
 }

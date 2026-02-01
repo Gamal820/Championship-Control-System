@@ -1,0 +1,52 @@
+@model Championship_Control_System.ViewModels.ValidateOTPVM
+@{
+    ViewData["Title"] = "Verify Code";
+    Layout = "_LayoutIdentity";
+}
+
+<div class="auth-container">
+    <div class="auth-header">
+        <i class="bi bi-shield-lock-fill main-icon"></i>
+        <h2>Verify Code</h2>
+        <p>Enter the OTP code sent to your email</p>
+    </div>
+
+    <div class="auth-body">
+        <div class="info-box alert alert-info text-start">
+            <i class="bi bi-envelope-check-fill"></i>
+            <span>Check your email for the code.</span>
+        </div>
+
+        <form asp-area="Identity" asp-controller="Account" asp-action="ValidateOTP" method="post">
+            <input type="hidden" asp-for="ApplicationUserId" />
+
+            <div class="mb-4">
+                <label asp-for="OTP" class="form-label fw-bold text-center d-block">OTP Code (4 digits)</label>
+                <input asp-for="OTP" class="form-control otp-input" placeholder="****" maxlength="4" id="otpInput" />
+                <span asp-validation-for="OTP" class="text-danger small d-block text-center mt-2"></span>
+            </div>
+
+            <button type="submit" class="btn btn-primary-custom w-100">
+                <i class="bi bi-check-circle"></i> Verify Code
+            </button>
+
+            <div class="info-box alert alert-warning mt-3 text-start">
+                <i class="bi bi-exclamation-triangle-fill"></i>
+                <strong>Security Tip:</strong> Do not share this code with anyone.
+            </div>
+
+            <div class="text-center mt-4">
+                <p class="mb-0">
+                    <a asp-area="Identity" asp-controller="Account" asp-action="ForgetPassword" class="link-text">
+                        <i class="bi bi-arrow-clockwise"></i> Resend Code
+                    </a>
+                </p>
+                <p class="mb-0 mt-2">
+                    <a asp-area="Identity" asp-controller="Account" asp-action="Login" class="link-text">
+                        <i class="bi bi-box-arrow-in-left"></i> Back to Login
+                    </a>
+                </p>
+            </div>
+        </form>
+    </div>
+</div>

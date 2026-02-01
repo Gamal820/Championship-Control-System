@@ -29,7 +29,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Areas\Identity\Views\" />
+    <Folder Include="Migrations\" />
   </ItemGroup>
 
 </Project>

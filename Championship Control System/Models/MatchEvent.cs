@@ -15,5 +15,5 @@ public partial class MatchEvent
 
     public virtual Match? Match { get; set; }
 
-    public virtual ICollection<User> Users { get; set; } = new List<User>();
+    public virtual ICollection<ApplicationUser> Users { get; set; } = new List<ApplicationUser>();
 }

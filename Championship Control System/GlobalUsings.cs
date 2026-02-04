@@ -1,0 +1,7 @@
+﻿global using Championship_Control_System.Models;
+global using Championship_Control_System.ViewModels;
+global using Championship_Control_System.DataAccess;
+global using Championship_Control_System.Repositories.IRepositories;
+global using Championship_Control_System.Repositories;
+global using Championship_Control_System.Utilities;
+

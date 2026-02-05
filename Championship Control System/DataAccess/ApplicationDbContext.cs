@@ -48,9 +48,9 @@ namespace Championship_Control_System.DataAccess
                 entity.Property(e => e.Name).HasMaxLength(100);
                 entity.Property(e => e.TeamId).HasColumnName("TeamID");
 
-                entity.HasOne(d => d.Team).WithMany(p => p.Coaches)
-                    .HasForeignKey(d => d.TeamId)
-                    .HasConstraintName("FK_Coach_Team");
+                entity.HasOne(d => d.Team).WithOne(p => p.Coach)
+                    .HasForeignKey<Team>(t => t.CoachId)
+                    .OnDelete(DeleteBehavior.SetNull);
             });
 
             modelBuilder.Entity<Match>(entity =>
@@ -130,13 +130,11 @@ namespace Championship_Control_System.DataAccess
                 entity.Property(e => e.TeamId).HasColumnName("TeamID");
                 entity.Property(e => e.Country).HasMaxLength(50);
                 entity.Property(e => e.Logo).HasMaxLength(255);
-                entity.Property(e => e.LogoUrl).HasMaxLength(255);
                 entity.Property(e => e.StadiumId).HasColumnName("StadiumID");
                 entity.Property(e => e.TeamName).HasMaxLength(100);
 
-                entity.HasOne(d => d.Stadium).WithMany(p => p.Teams)
-                    .HasForeignKey(d => d.StadiumId)
-                    .HasConstraintName("FK_Team_Stadium");
+                entity.HasOne(d => d.Stadium).WithOne(p => p.Team)
+                    .HasForeignKey<Team>(t => t.StadiumId);
 
                 entity.HasMany(d => d.Championships).WithMany(p => p.Teams)
                     .UsingEntity<Dictionary<string, object>>(

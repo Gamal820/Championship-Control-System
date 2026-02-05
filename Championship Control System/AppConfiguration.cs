@@ -40,8 +40,14 @@ namespace Championship_Control_System
             services.AddTransient<IEmailSender, EmailSender>();
      
             services.AddScoped<IRepository<ApplicationUserOTP>, Repository<ApplicationUserOTP>>();
-  
+            services.AddScoped<IRepository<Stadium>, Repository<Stadium>>();
+            services.AddScoped<IRepository<Team>, Repository<Team>>();
+            services.AddScoped<IRepository<Coach>, Repository<Coach>>();
+
+
             services.AddScoped<IDBInitializer, DBInitializer>();
+
+
         }
     }
 }

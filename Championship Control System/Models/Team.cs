@@ -13,13 +13,12 @@ public partial class Team
 
     public string? Logo { get; set; }
 
-    public string? LogoUrl { get; set; }
-
     public string? Country { get; set; }
 
     public int? StadiumId { get; set; }
+    public int? CoachId { get; set; }
 
-    public virtual ICollection<Coach> Coaches { get; set; } = new List<Coach>();
+    public virtual Coach? Coach { get; set; }
 
     public virtual ICollection<Match> MatchAwayTeams { get; set; } = new List<Match>();
 

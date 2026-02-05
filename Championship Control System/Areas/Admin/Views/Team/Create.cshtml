@@ -1,0 +1,75 @@
+﻿@model Championship_Control_System.Models.Team
+
+@{
+    ViewData["Title"] = "Register Team";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow border-0">
+                <div class="card-header bg-success text-white py-3">
+                    <h4 class="mb-0"><i class="bi bi-shield-plus me-2"></i>Register New Team</h4>
+                </div>
+                <div class="card-body p-4">
+                    <form asp-action="Create" method="post" enctype="multipart/form-data">
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                        <div class="row">
+                            <div class="col-md-8 mb-3">
+                                <label asp-for="TeamName" class="form-label fw-bold">Team Name</label>
+                                <input asp-for="TeamName" class="form-control" placeholder="Enter team name" />
+                                <span asp-validation-for="TeamName" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label asp-for="Country" class="form-label fw-bold">Country</label>
+                                <input asp-for="Country" class="form-control" placeholder="e.g. Egypt" />
+                                <span asp-validation-for="Country" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="FoundationDate" class="form-label fw-bold">Foundation Date</label>
+                                <input asp-for="FoundationDate" type="date" class="form-control" />
+                                <span asp-validation-for="FoundationDate" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="StadiumId" class="form-label fw-bold">Home Stadium</label>
+                                <select asp-for="StadiumId" class="form-select" asp-items="ViewBag.Stadiums">
+                                    <option value="">-- Select Available Stadium --</option>
+                                </select>
+                                <span asp-validation-for="StadiumId" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label asp-for="CoachId" class="control-label fw-bold">Team Coach</label>
+                            <select asp-for="CoachId" class="form-select" asp-items="ViewBag.Coaches">
+                                <option value="">-- Assign a Coach --</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Team Logo</label>
+                            <input type="file" name="logo" class="form-control" accept="image/*" />
+                            <small class="text-muted">Upload a high-quality shield or logo.</small>
+                        </div>
+
+                        <div class="d-flex gap-2 mt-4">
+                            <button type="submit" class="btn btn-success px-4 shadow-sm">
+                                <i class="bi bi-check-circle me-1"></i> Save Team
+                            </button>
+                            <a asp-action="Index" class="btn btn-outline-secondary px-4">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

@@ -1,7 +1,8 @@
+using Championship_Control_System;
 using Championship_Control_System.DataAccess;
 using Championship_Control_System.Models;
-using Championship_Control_System.Repositories.IRepositories;
 using Championship_Control_System.Repositories;
+using Championship_Control_System.Repositories.IRepositories;
 using Championship_Control_System.Utitlies; 
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
@@ -12,21 +13,8 @@ var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
               ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 
-builder.Services.AddDbContext<ApplicationDbContext>(option =>
-{
-    option.UseSqlServer(connectionString);
-});
+builder.Services.RegisterConfig(connectionString);
 
-builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options => {
-    options.SignIn.RequireConfirmedAccount = true;
-    options.Password.RequiredLength = 6;
-})
-.AddEntityFrameworkStores<ApplicationDbContext>()
-.AddDefaultTokenProviders();
-
-
-builder.Services.AddScoped<IEmailSender, EmailSender>();
-builder.Services.AddScoped<IRepository<ApplicationUserOTP>, Repository<ApplicationUserOTP>>();
 
 builder.Services.AddControllersWithViews();
 

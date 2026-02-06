@@ -54,6 +54,13 @@
                     <span>Players</span>
                 </a>
             </li>
+            <!-- Coach -->
+            <li class="nav-item">
+                <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Coach" ? "active" : "")" asp-controller="Coach" asp-action="Index">
+                    <i class="bi bi-people-fill"></i>
+                    <span>Coaches</span>
+                </a>
+            </li>
 
             <li class="nav-header">Match Center</li>
 

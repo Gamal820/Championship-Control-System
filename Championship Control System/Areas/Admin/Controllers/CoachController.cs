@@ -86,6 +86,7 @@ namespace Championship_Control_System.Areas.Admin.Controllers
             await _coachRepository.AddAsync(coach, cancellationToken);
             await _coachRepository.CommitAsync(cancellationToken);
 
+            TempData["Success"] = "Coach created successfully.";
             return RedirectToAction(nameof(Index));
         }
 
@@ -191,6 +192,7 @@ namespace Championship_Control_System.Areas.Admin.Controllers
 
             await _coachRepository.CommitAsync(cancellationToken);
 
+            TempData["Success"] = "Coach updated successfully.";
             return RedirectToAction(nameof(Index));
         }
 
@@ -213,6 +215,7 @@ namespace Championship_Control_System.Areas.Admin.Controllers
                 await _coachRepository.CommitAsync(cancellationToken);
             }
 
+            TempData["Success"] = "Coach deleted successfully.";
             return RedirectToAction(nameof(Index));
         }
 

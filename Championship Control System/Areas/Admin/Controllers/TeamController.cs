@@ -61,6 +61,7 @@ namespace Championship_Control_System.Areas.Admin.Controllers
             {
                 await _teamRepository.AddAsync(team, cancellationToken);
                 await _teamRepository.CommitAsync(cancellationToken);
+                TempData["Success"] = "Team created successfully.";
                 return RedirectToAction(nameof(Index));
             }
             return View(team);
@@ -121,6 +122,7 @@ namespace Championship_Control_System.Areas.Admin.Controllers
                 existingTeam.StadiumId = team.StadiumId;
 
                 await _teamRepository.CommitAsync(cancellationToken);
+                TempData["Success"] = "Team updated successfully.";
                 return RedirectToAction(nameof(Index));
             }
             return View(team);
@@ -135,6 +137,7 @@ namespace Championship_Control_System.Areas.Admin.Controllers
                 _teamRepository.Delete(team);
                 await _teamRepository.CommitAsync(cancellationToken);
             }
+            TempData["Success"] = "Team deleted successfully.";
             return RedirectToAction(nameof(Index));
         }
 

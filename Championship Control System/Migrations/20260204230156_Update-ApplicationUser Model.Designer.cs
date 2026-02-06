@@ -4,6 +4,7 @@ using Championship_Control_System.DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Championship_Control_System.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260204230156_Update-ApplicationUser Model")]
+    partial class UpdateApplicationUserModel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -202,6 +205,8 @@ namespace Championship_Control_System.Migrations
                     b.HasKey("CoachId")
                         .HasName("PK__Coach__F411D9A124C3AD99");
 
+                    b.HasIndex("TeamId");
+
                     b.ToTable("Coach", (string)null);
                 });
 
@@ -377,9 +382,6 @@ namespace Championship_Control_System.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TeamId"));
 
-                    b.Property<int?>("CoachId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Country")
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
@@ -388,6 +390,10 @@ namespace Championship_Control_System.Migrations
                         .HasColumnType("date");
 
                     b.Property<string>("Logo")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<string>("LogoUrl")
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
 
@@ -403,13 +409,7 @@ namespace Championship_Control_System.Migrations
                     b.HasKey("TeamId")
                         .HasName("PK__Team__123AE7B9560400F4");
 
-                    b.HasIndex("CoachId")
-                        .IsUnique()
-                        .HasFilter("[CoachId] IS NOT NULL");
-
-                    b.HasIndex("StadiumId")
-                        .IsUnique()
-                        .HasFilter("[StadiumID] IS NOT NULL");
+                    b.HasIndex("StadiumId");
 
                     b.ToTable("Team", (string)null);
                 });
@@ -676,6 +676,16 @@ namespace Championship_Control_System.Migrations
                     b.Navigation("ApplicationUser");
                 });
 
+            modelBuilder.Entity("Championship_Control_System.Models.Coach", b =>
+                {
+                    b.HasOne("Championship_Control_System.Models.Team", "Team")
+                        .WithMany("Coaches")
+                        .HasForeignKey("TeamId")
+                        .HasConstraintName("FK_Coach_Team");
+
+                    b.Navigation("Team");
+                });
+
             modelBuilder.Entity("Championship_Control_System.Models.Match", b =>
                 {
                     b.HasOne("Championship_Control_System.Models.Team", "AwayTeam")
@@ -729,16 +739,10 @@ namespace Championship_Control_System.Migrations
 
             modelBuilder.Entity("Championship_Control_System.Models.Team", b =>
                 {
-                    b.HasOne("Championship_Control_System.Models.Coach", "Coach")
-                        .WithOne("Team")
-                        .HasForeignKey("Championship_Control_System.Models.Team", "CoachId")
-                        .OnDelete(DeleteBehavior.SetNull);
-
                     b.HasOne("Championship_Control_System.Models.Stadium", "Stadium")
-                        .WithOne("Team")
-                        .HasForeignKey("Championship_Control_System.Models.Team", "StadiumId");
-
-                    b.Navigation("Coach");
+                        .WithMany("Teams")
+                        .HasForeignKey("StadiumId")
+                        .HasConstraintName("FK_Team_Stadium");
 
                     b.Navigation("Stadium");
                 });
@@ -870,11 +874,6 @@ namespace Championship_Control_System.Migrations
                     b.Navigation("TeamStandings");
                 });
 
-            modelBuilder.Entity("Championship_Control_System.Models.Coach", b =>
-                {
-                    b.Navigation("Team");
-                });
-
             modelBuilder.Entity("Championship_Control_System.Models.Match", b =>
                 {
                     b.Navigation("MatchEvents");
@@ -886,11 +885,13 @@ namespace Championship_Control_System.Migrations
                 {
                     b.Navigation("Matches");
 
-                    b.Navigation("Team");
+                    b.Navigation("Teams");
                 });
 
             modelBuilder.Entity("Championship_Control_System.Models.Team", b =>
                 {
+                    b.Navigation("Coaches");
+
                     b.Navigation("MatchAwayTeams");
 
                     b.Navigation("MatchHomeTeams");

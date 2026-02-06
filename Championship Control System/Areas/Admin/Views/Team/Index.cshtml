@@ -1,0 +1,86 @@
+﻿@model IEnumerable<Championship_Control_System.Models.Team>
+
+@{
+    ViewData["Title"] = "Teams List";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="text-primary fw-bold"><i class="bi bi-shield-shaded me-2"></i>Teams</h2>
+        <a asp-action="Create" class="btn btn-success shadow-sm">
+            <i class="bi bi-plus-lg"></i> Register New Team
+        </a>
+    </div>
+
+    <div class="card shadow-sm border-0">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="bg-dark text-white">
+                        <tr>
+                            <th class="ps-4">Logo</th>
+                            <th>Team Name</th>
+                            <th>Country</th>
+                            <th>Foundation</th>
+                            <th>Home Stadium</th>
+                            <th>Head Coach</th>
+                            <th class="text-center">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td class="ps-4">
+                                    @if (!string.IsNullOrEmpty(item.Logo))
+                                    {
+                                        <img src="@item.Logo" alt="Logo" class="rounded" style="width: 40px; height: 40px; object-fit: contain;" />
+                                    }
+                                    else
+                                    {
+                                        <div class="bg-light rounded d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                                            <i class="bi bi-shield text-muted"></i>
+                                        </div>
+                                    }
+                                </td>
+                                <td class="fw-bold text-dark">@item.TeamName</td>
+                                <td><span class="badge bg-light text-dark border">@item.Country</span></td>
+                                <td>@(item.FoundationDate?.ToString("yyyy") ?? "N/A")</td>
+                                <td>
+                                    @if (item.Stadium != null)
+                                    {
+                                        <span class="text-primary"><i class="bi bi-geo-alt-fill me-1"></i>@item.Stadium.StadiumName</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted small">No Stadium</span>
+                                    }
+                                </td>
+                                <td>
+                                    @if (item.Coach != null)
+                                    {
+                                        <span class="text-dark"><i class="bi bi-person-badge me-1"></i>@item.Coach.Name</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-warning text-dark">Vacant</span>
+                                    }
+                                </td>
+                                <td class="text-center">
+                                    <div class="btn-group" role="group">
+                                        <a asp-action="Edit" asp-route-id="@item.TeamId" class="btn btn-sm btn-outline-primary" title="Edit">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+                                        <a asp-action="Delete" asp-route-id="@item.TeamId" class="btn btn-sm btn-outline-danger" title="Delete">
+                                            <i class="bi bi-trash"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Championship_Control_System.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260129075046_User")]
-    partial class User
+    [Migration("20260201092628_Init")]
+    partial class Init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

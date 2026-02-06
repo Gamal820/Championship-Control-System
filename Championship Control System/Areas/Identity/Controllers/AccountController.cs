@@ -150,7 +150,7 @@ namespace Championship_Control_System.Areas.Identity.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> ForgetPassword(ForgetPasswordVM forgetPasswordVM)
+        public async Task<IActionResult> ForgetPassword(ForgetPasswordVM forgetPasswordVM,CancellationToken cancellationToken)
         {
             if (!ModelState.IsValid)
                 return View(forgetPasswordVM);
@@ -184,9 +184,9 @@ namespace Championship_Control_System.Areas.Identity.Controllers
                 OTP = otp,
                 ValidTo = DateTime.UtcNow.AddDays(1),
             });
-            await _applicationUserOTPRepository.CommitAsync();
+            await _applicationUserOTPRepository.CommitAsync(cancellationToken);
 
-            await _emailSender.SendEmailAsync(user.Email!, "Ecommerce 519 - Reset Your Password"
+            await _emailSender.SendEmailAsync(user.Email!, "Championship - Reset Your Password"
                 , $"<h1>Use This OTP: {otp} To Reset Your Account. Don't share it.</h1>");
 
             return RedirectToAction("ValidateOTP", new { userId = user.Id });

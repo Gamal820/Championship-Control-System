@@ -1,0 +1,61 @@
+@model Championship_Control_System.ViewModels.ResendEmailConfirmationVM
+@{
+    ViewData["Title"] = "Resend Email Confirmation";
+    Layout = "_LayoutIdentity";
+}
+
+<div class="auth-container">
+    <div class="auth-header">
+        <i class="bi bi-envelope-check main-icon"></i>
+        <h2>Resend Confirmation</h2>
+        <p>Didn't receive the email?</p>
+    </div>
+
+    <div class="auth-body">
+        <div class="info-box alert alert-info text-start">
+            <i class="bi bi-info-circle-fill"></i>
+            <span>A confirmation link will be sent to your email address.</span>
+        </div>
+
+        <form asp-area="Identity" asp-controller="Account" asp-action="ResendEmailConfirmation" method="post">
+            <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+            <div class="mb-4 text-start">
+                <label asp-for="UserNameOREmail" class="form-label fw-bold">Username or Email</label>
+                <div class="input-group">
+                    <input asp-for="UserNameOREmail" class="form-control" placeholder="Enter username or email" />
+                    <span class="input-group-text"><i class="bi bi-person-circle"></i></span>
+                </div>
+                <span asp-validation-for="UserNameOREmail" class="text-danger small"></span>
+            </div>
+
+            <button type="submit" class="btn btn-primary-custom w-100">
+                <i class="bi bi-arrow-repeat"></i> Resend Email
+            </button>
+
+            <div class="steps">
+                <h6><i class="bi bi-list-check"></i> Next Steps:</h6>
+                <div class="step-item">
+                    <span class="step-number">1</span>
+                    <span>Check your email inbox</span>
+                </div>
+                <div class="step-item">
+                    <span class="step-number">2</span>
+                    <span>Open the email and click the confirmation link</span>
+                </div>
+                <div class="step-item">
+                    <span class="step-number">3</span>
+                    <span>Log in to your account</span>
+                </div>
+            </div>
+
+            <div class="text-center mt-4">
+                <p class="mb-0">
+                    <a asp-area="Identity" asp-controller="Account" asp-action="Login" class="link-text">
+                        <i class="bi bi-box-arrow-in-left"></i> Back to Login
+                    </a>
+                </p>
+            </div>
+        </form>
+    </div>
+</div>

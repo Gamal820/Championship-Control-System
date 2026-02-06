@@ -1,0 +1,69 @@
+@model Championship_Control_System.ViewModels.LoginVM
+@{
+    ViewData["Title"] = "Login";
+    Layout = "_LayoutIdentity";
+}
+
+<div class="auth-container">
+    <div class="auth-header">
+        <i class="bi bi-person-circle main-icon"></i>
+        <h2>Login</h2>
+        <p>Welcome back!</p>
+    </div>
+
+    <div class="auth-body">
+        <form asp-area="Identity" asp-controller="Account" asp-action="Login" method="post">
+            <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+            <div class="mb-3 text-start">
+                <label asp-for="UserNameOREmail" class="form-label fw-bold">Username or Email</label>
+                <div class="input-group">
+                    <input asp-for="UserNameOREmail" class="form-control" placeholder="Enter username or email" />
+                    <span class="input-group-text"><i class="bi bi-person"></i></span>
+                </div>
+                <span asp-validation-for="UserNameOREmail" class="text-danger small"></span>
+            </div>
+
+            <div class="mb-3 text-start">
+                <label asp-for="Password" class="form-label fw-bold">Password</label>
+                <div class="input-group">
+                    <input asp-for="Password" type="password" class="form-control" placeholder="Enter password" />
+                    <span class="input-group-text"><i class="bi bi-lock"></i></span>
+                </div>
+                <span asp-validation-for="Password" class="text-danger small"></span>
+            </div>
+
+            <div class="mb-3 form-check text-start">
+                <input asp-for="RememberMe" class="form-check-input" type="checkbox" />
+                <label asp-for="RememberMe" class="form-check-label">Remember Me</label>
+            </div>
+
+            <button type="submit" class="btn btn-primary-custom w-100">
+                <i class="bi bi-box-arrow-in-left"></i> Login
+            </button>
+
+            <div class="divider text-center my-3">
+                <span>OR</span>
+            </div>
+
+            <div class="text-center">
+                <p class="mb-2">
+                    <a asp-area="Identity" asp-controller="Account" asp-action="ForgetPassword" class="link-text">
+                        <i class="bi bi-key"></i> Forgot Password?
+                    </a>
+                </p>
+                <p class="mb-2">
+                    <a asp-area="Identity" asp-controller="Account" asp-action="ResendEmailConfirmation" class="link-text">
+                        <i class="bi bi-envelope-check"></i> Resend Email Confirmation
+                    </a>
+                </p>
+                <p class="mb-0">
+                    Don't have an account? 
+                    <a asp-area="Identity" asp-controller="Account" asp-action="Register" class="link-text">
+                        <i class="bi bi-person-plus"></i> Create New Account
+                    </a>
+                </p>
+            </div>
+        </form>
+    </div>
+</div>

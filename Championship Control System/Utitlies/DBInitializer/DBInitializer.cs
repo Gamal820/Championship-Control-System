@@ -1,8 +1,5 @@
 ﻿using Championship_Control_System.DataAccess;
 using Championship_Control_System.Models;
-using Championship_Control_System.Utitlies;
-using Championship_Control_System.Utitlies.DBInitilizer;
-using Championship_Control_System.Utitlies.DBInitilizer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;

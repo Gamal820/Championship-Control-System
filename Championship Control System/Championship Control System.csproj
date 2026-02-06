@@ -29,7 +29,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Areas\Identity\Views\" />
+    <Folder Include="Migrations\" />
+    <Folder Include="wwwroot\images\coaches\" />
+    <Folder Include="wwwroot\images\teams\" />
   </ItemGroup>
 
 </Project>

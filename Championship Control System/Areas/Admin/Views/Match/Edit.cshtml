@@ -1,0 +1,28 @@
+﻿@model Championship_Control_System.Models.Match
+
+@{
+    ViewData["Title"] = "Edit Match";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow border-0">
+                <div class="card-header bg-primary text-white py-3">
+                    <h4 class="mb-0">
+                        <i class="bi bi-pencil-square me-2"></i>Edit Match
+                    </h4>
+                </div>
+                <div class="card-body p-4">
+                    <form asp-action="Edit" method="post">
+                        <input type="hidden" asp-for="MatchId" />
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                        
+                        <partial name="Create" model="Model" />
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,72 @@
+﻿@model IEnumerable<Championship_Control_System.Models.Match>
+
+@{
+    ViewData["Title"] = "Matches List";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="text-primary fw-bold">
+            <i class="bi bi-calendar-event me-2"></i>Matches
+        </h2>
+        <a asp-action="Create" class="btn btn-success shadow-sm">
+            <i class="bi bi-plus-lg"></i> Schedule Match
+        </a>
+    </div>
+
+    <div class="card shadow-sm border-0">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="bg-dark text-white">
+                        <tr>
+                            <th>Date</th>
+                            <th>Home Team</th>
+                            <th>Away Team</th>
+                            <th>Stadium</th>
+                            <th>Championship</th>
+                            <th>Status</th>
+                            <th class="text-center">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@item.MatchDate?.ToString("dd MMM yyyy")</td>
+                                <td class="fw-bold">@item.HomeTeam?.TeamName</td>
+                                <td class="fw-bold">@item.AwayTeam?.TeamName</td>
+                                <td>
+                                    <i class="bi bi-geo-alt-fill me-1 text-danger"></i>
+                                    @item.Stadium?.StadiumName
+                                </td>
+                                <td>
+                                    <span class="badge bg-light text-dark border">
+                                        @item.Championship?.ChampionshipName
+                                    </span>
+                                </td>
+                                <td>
+                                    <span class="badge bg-info text-dark">
+                                        @item.Status
+                                    </span>
+                                </td>
+                                <td class="text-center">
+                                    <div class="btn-group">
+                                        <a asp-action="Edit" asp-route-id="@item.MatchId"
+                                           class="btn btn-sm btn-outline-primary">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+                                        <a asp-action="Delete" asp-route-id="@item.MatchId"
+                                           class="btn btn-sm btn-outline-danger">
+                                            <i class="bi bi-trash"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

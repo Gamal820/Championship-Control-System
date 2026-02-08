@@ -1,0 +1,41 @@
+﻿@model Championship_Control_System.Models.MatchEvent
+
+@{
+    ViewData["Title"] = "Edit Match Event";
+}
+
+<h2>Edit Match Event</h2>
+
+<form asp-action="Edit" method="post">
+    <input type="hidden" asp-for="EventId" />
+
+    <div class="mb-3">
+        <label asp-for="Minute" class="form-label"></label>
+        <input asp-for="Minute" class="form-control" />
+        <span asp-validation-for="Minute" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="EventType" class="form-label"></label>
+        <select asp-for="EventType" class="form-control">
+            <option>Goal</option>
+            <option>Yellow Card</option>
+            <option>Red Card</option>
+            <option>Substitution</option>
+        </select>
+        <span asp-validation-for="EventType" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Match</label>
+        <select asp-for="MatchId" asp-items="ViewBag.Matches" class="form-control"></select>
+        <span asp-validation-for="MatchId" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Update</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

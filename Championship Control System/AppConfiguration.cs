@@ -45,8 +45,9 @@ namespace Championship_Control_System
             services.AddScoped<IRepository<Coach>, Repository<Coach>>();
             services.AddScoped<IRepository<Championship>, Repository<Championship>>();
 
-
             services.AddScoped<IDBInitializer, DBInitializer>();
+
+
         }
     }
 }

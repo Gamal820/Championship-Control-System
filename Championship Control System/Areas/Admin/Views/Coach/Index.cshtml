@@ -1,0 +1,90 @@
+﻿@model IEnumerable<Championship_Control_System.Models.Coach>
+
+@{
+    ViewData["Title"] = "Coaches List";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="text-primary fw-bold">
+            <i class="bi bi-person-badge me-2"></i>Coaches
+        </h2>
+
+        <a asp-action="Create" class="btn btn-primary shadow-sm">
+            <i class="bi bi-plus-lg"></i> Create New Coach
+        </a>
+    </div>
+
+    <div class="card shadow-sm border-0">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="bg-dark text-white">
+                        <tr>
+                            <th class="ps-4">Photo</th>
+                            <th>Name</th>
+                            <th>BirthDate</th>
+                            <th>Team</th>
+                            <th class="text-center">Actions</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td class="ps-4">
+                                    @if (!string.IsNullOrEmpty(item.Img))
+                                    {
+                                        <img src="~/images/coaches/@item.Img" alt="Coach"
+                                             class="rounded"
+                                             style="width: 40px; height: 40px; object-fit: cover;" />
+                                    }
+                                    else
+                                    {
+                                        <div class="bg-light rounded d-flex align-items-center justify-content-center"
+                                             style="width: 40px; height: 40px;">
+                                            <i class="bi bi-person text-muted"></i>
+                                        </div>
+                                    }
+                                </td>
+
+                                <td class="fw-bold text-dark">@item.Name</td>
+
+                                <td>@(item.BirthData?.ToString("yyyy-MM-dd") ?? "N/A")</td>
+
+                                <td>
+                                    @if (item.Team != null)
+                                    {
+                                        <span class="text-dark">
+                                            <i class="bi bi-shield-check me-1"></i>@item.Team.TeamName
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-warning text-dark">No Team</span>
+                                    }
+                                </td>
+
+                                <td class="text-center">
+                                    <div class="btn-group" role="group">
+                                        <a asp-action="Edit" asp-route-id="@item.CoachId"
+                                           class="btn btn-sm btn-outline-primary" title="Edit">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+
+                                        <a asp-action="Delete" asp-route-id="@item.CoachId"
+                                           class="btn btn-sm btn-outline-danger" title="Delete">
+                                            <i class="bi bi-trash"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

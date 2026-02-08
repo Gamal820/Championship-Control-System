@@ -1,0 +1,105 @@
+﻿@model Championship_Control_System.ViewModels.UpdateChampionshipVM
+
+@{
+    ViewData["Title"] = "Edit Championship";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <div class="card shadow border-0">
+                <div class="card-header bg-primary text-white py-3">
+                    <h4 class="mb-0"><i class="bi bi-pencil-square me-2"></i>Edit Championship</h4>
+                </div>
+
+                <div class="card-body p-4">
+                    <form asp-action="Edit" method="post" enctype="multipart/form-data">
+                        <input type="hidden" asp-for="ChampionshipId" />
+
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                        <div class="text-center mb-4">
+                            @if (!string.IsNullOrEmpty(Model.CurrentLogo))
+                            {
+                                <img src="~/images/championships/@Model.CurrentLogo"
+                                     class="img-thumbnail rounded mb-2"
+                                     style="width: 110px; height: 110px; object-fit: cover;" />
+                            }
+                            else
+                            {
+                                <div class="bg-light rounded d-inline-flex align-items-center justify-content-center mb-2"
+                                     style="width: 110px; height: 110px;">
+                                    <i class="bi bi-trophy text-muted" style="font-size:40px;"></i>
+                                </div>
+                            }
+                            <div class="fw-bold">Current Logo</div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-8 mb-3">
+                                <label asp-for="ChampionshipName" class="form-label fw-bold">Championship Name</label>
+                                <input asp-for="ChampionshipName" class="form-control" />
+                                <span asp-validation-for="ChampionshipName" class="text-danger"></span>
+                            </div>
+
+                            <div class="col-md-4 mb-3">
+                                <label asp-for="Season" class="form-label fw-bold">Season</label>
+                                <input asp-for="Season" class="form-control" placeholder="e.g. 2025/2026" />
+                                <span asp-validation-for="Season" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label asp-for="Country" class="form-label fw-bold">Country</label>
+                                <input asp-for="Country" class="form-control" placeholder="e.g. Egypt" />
+                                <span asp-validation-for="Country" class="text-danger"></span>
+                            </div>
+
+                            <div class="col-md-4 mb-3">
+                                <label asp-for="StartDate" class="form-label fw-bold">Start Date</label>
+                                <input asp-for="StartDate" type="date" class="form-control" />
+                                <span asp-validation-for="StartDate" class="text-danger"></span>
+                            </div>
+
+                            <div class="col-md-4 mb-3">
+                                <label asp-for="EndDate" class="form-label fw-bold">End Date</label>
+                                <input asp-for="EndDate" type="date" class="form-control" />
+                                <span asp-validation-for="EndDate" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold">Update Logo</label>
+                                <input asp-for="LogoFile" type="file" class="form-control" accept="image/*" />
+                                <span asp-validation-for="LogoFile" class="text-danger"></span>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="TeamIds" class="form-label fw-bold">Teams</label>
+                                <select asp-for="TeamIds" class="form-select" asp-items="Model.Teams" multiple size="6">
+                                </select>
+                                <span asp-validation-for="TeamIds" class="text-danger"></span>
+                                <small class="text-muted">Hold Ctrl (Windows) / Cmd (Mac) to select multiple teams.</small>
+                            </div>
+                        </div>
+
+                        <div class="d-flex gap-2 mt-4">
+                            <button type="submit" class="btn btn-primary px-4">
+                                <i class="bi bi-save me-1"></i> Save Changes
+                            </button>
+                            <a asp-action="Index" class="btn btn-outline-secondary px-4">Back to List</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

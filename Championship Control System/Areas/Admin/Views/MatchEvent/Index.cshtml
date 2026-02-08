@@ -1,0 +1,38 @@
+﻿@model IEnumerable<Championship_Control_System.Models.MatchEvent>
+
+@{
+    ViewData["Title"] = "Match Events";
+}
+
+<h2 class="mb-3">Match Events</h2>
+
+<a asp-action="Create" class="btn btn-success mb-3">
+    + Add New Event
+</a>
+
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>Minute</th>
+            <th>Event Type</th>
+            <th>Match</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Minute</td>
+                <td>@item.EventType</td>
+                <td>Match #@item.MatchId</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.EventId" class="btn btn-sm btn-primary">Edit</a>
+                    <a asp-action="Delete" asp-route-id="@item.EventId"
+                       onclick="return confirm('Are you sure?')"
+                       class="btn btn-sm btn-danger">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

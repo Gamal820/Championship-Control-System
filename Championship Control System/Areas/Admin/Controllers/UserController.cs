@@ -94,6 +94,7 @@ namespace Championship_Control_System.Areas.Admin.Controllers
                         await _roleManager.CreateAsync(new IdentityRole(model.Role));
                     }
                     await _userManager.AddToRoleAsync(user, model.Role);
+                    TempData["Success"] = "User created successfully.";
                     return RedirectToAction(nameof(Index));
                 }
 

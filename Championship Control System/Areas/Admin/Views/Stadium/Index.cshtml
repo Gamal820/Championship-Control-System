@@ -1,0 +1,73 @@
+﻿@model IEnumerable<Championship_Control_System.Models.Stadium>
+
+@{
+    ViewData["Title"] = "Stadiums Management";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="text-primary fw-bold">Stadiums List</h2>
+        <a asp-action="Create" class="btn btn-primary shadow-sm">
+            <i class="bi bi-plus-lg"></i> Add New Stadium
+        </a>
+    </div>
+
+    <div class="card shadow-sm border-0">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead>
+                        <tr>
+                            <th class="ps-4">Stadium Name</th>
+                            <th>City</th>
+                            <th>Capacity</th>
+                            <th>Owner Team</th> 
+                            <th class="text-center">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model != null && Model.Any())
+                        {
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td class="ps-4 fw-semibold text-dark">@item.StadiumName</td>
+                                    <td>@item.City</td>
+                                    <td>
+                                        <span class="badge bg-light text-primary border">
+                                            @item.Capacity?.ToString("N0") Seats
+                                        </span>
+                                    </td>
+                                    <td>
+                                        @if (item.Team != null)
+                                        {
+                                            <span class="text-success fw-bold">
+                                                <i class="bi bi-shield-fill me-1"></i> @item.Team.TeamName
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted fst-italic">No Team Assigned</span>
+                                        }
+                                    </td>
+                                    <td class="text-center">
+                                        <div class="btn-group" role="group">
+                                            <a asp-action="Edit" asp-route-id="@item.StadiumId" class="btn btn-sm btn-outline-primary">Edit</a>
+                                            <a asp-action="Delete" asp-route-id="@item.StadiumId" class="btn btn-sm btn-outline-danger">Delete</a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="5" class="text-center py-5 text-muted">No stadiums found.</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

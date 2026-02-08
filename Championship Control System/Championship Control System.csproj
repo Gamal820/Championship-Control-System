@@ -32,11 +32,6 @@
     <Folder Include="Migrations\" />
     <Folder Include="wwwroot\images\coaches\" />
     <Folder Include="wwwroot\images\championships\" />
-    <Folder Include="wwwroot\images\championships\" />
-    <Folder Include="wwwroot\images\championships\" />
-    <Folder Include="wwwroot\images\championships\" />
-    <Folder Include="wwwroot\images\coaches\" />
-    <Folder Include="wwwroot\images\teams\" />
     <Folder Include="wwwroot\images\teams\" />
   </ItemGroup>
 

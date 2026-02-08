@@ -23,7 +23,7 @@
 
             <!-- Tournaments & Leagues -->
             <li class="nav-item">
-                <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Tournament" ? "active" : "")" asp-controller="Tournament" asp-action="Index">
+                <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Tournament" ? "active" : "")" asp-controller="Championship" asp-action="Index">
                     <i class="bi bi-award"></i>
                     <span>Tournaments & Leagues</span>
                 </a>
@@ -52,6 +52,13 @@
                 <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Player" ? "active" : "")" asp-controller="Player" asp-action="Index">
                     <i class="bi bi-people-fill"></i>
                     <span>Players</span>
+                </a>
+            </li>
+            <!-- Coach -->
+            <li class="nav-item">
+                <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Coach" ? "active" : "")" asp-controller="Coach" asp-action="Index">
+                    <i class="bi bi-people-fill"></i>
+                    <span>Coaches</span>
                 </a>
             </li>
 

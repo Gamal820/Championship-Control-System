@@ -1,0 +1,100 @@
+﻿@model Championship_Control_System.Models.Player
+
+@{
+    ViewData["Title"] = "Edit Player";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-10 col-lg-8">
+            <div class="card shadow border-0">
+                <div class="card-header bg-primary text-white py-3">
+                    <h4 class="mb-0"><i class="bi bi-pencil-square me-2"></i>Edit Player Information</h4>
+                </div>
+                <div class="card-body p-4 bg-light">
+                    <form asp-action="Edit" method="post" enctype="multipart/form-data">
+                        <input type="hidden" asp-for="PlayerId" />
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                        <div class="text-center mb-4">
+                            @if (!string.IsNullOrEmpty(Model.Img))
+                            {
+                                <img src="@Model.Img" class="rounded-circle img-thumbnail shadow-sm" style="width: 120px; height: 120px; object-fit: cover;" />
+                            }
+                            else
+                            {
+                                <div class="bg-secondary rounded-circle d-inline-flex align-items-center justify-content-center shadow-sm" style="width: 120px; height: 120px;">
+                                    <i class="bi bi-person text-white fs-1"></i>
+                                </div>
+                            }
+                            <div class="mt-2 text-muted small">Current Photo</div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="Fname" class="form-label fw-bold">First Name</label>
+                                <input asp-for="Fname" class="form-control" />
+                                <span asp-validation-for="Fname" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="Lname" class="form-label fw-bold">Last Name</label>
+                                <input asp-for="Lname" class="form-control" />
+                                <span asp-validation-for="Lname" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="Nationality" class="form-label fw-bold">Nationality</label>
+                                <input asp-for="Nationality" class="form-control" />
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="BirthDate" class="form-label fw-bold">Birth Date</label>
+                                <input asp-for="BirthDate" type="date" class="form-control" />
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label asp-for="Position" class="form-label fw-bold">Position</label>
+                                <select asp-for="Position" class="form-select" asp-items="ViewBag.Positions">
+                                    <option value="">-- Select --</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label asp-for="ShirtNumber" class="form-label fw-bold">Shirt #</label>
+                                <input asp-for="ShirtNumber" type="number" class="form-control" />
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label asp-for="TeamId" class="form-label fw-bold">Current Team</label>
+                                <select asp-for="TeamId" class="form-select" asp-items="ViewBag.Teams">
+                                    <option value="">-- Free Agent --</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label fw-bold">Update Photo</label>
+                            <input type="file" name="img" class="form-control" accept="image/*" />
+                            <small class="text-muted">Leave empty to keep the current photo.</small>
+                        </div>
+
+                        <hr />
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-primary px-5 shadow-sm">
+                                <i class="bi bi-save me-1"></i> Update Player
+                            </button>
+                            <a asp-action="Index" class="btn btn-outline-secondary px-4">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

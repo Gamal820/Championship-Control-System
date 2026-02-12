@@ -107,6 +107,7 @@ namespace Championship_Control_System.Areas.Admin.Controllers
             if (ModelState.IsValid)
             {
                 existingMatch.MatchDate = match.MatchDate;
+                existingMatch.TicketPrice = match.TicketPrice;
                 existingMatch.HomeGoals = match.HomeGoals;
                 existingMatch.AwayGoals = match.AwayGoals;
                 existingMatch.AvailableTicket = match.AvailableTicket;

@@ -1,13 +1,16 @@
-﻿using Microsoft.AspNetCore.Localization;
+﻿using Azure;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
-
 namespace Championship_Control_System.Areas.Customer.Controllers
 {
-    [Area("Customer")]
+    [Area(areaName: "Customer")]
     public class HomeController : Controller
     {
-
-     //
+        public IActionResult Index()
+        {
+            return View();
+        }
         [HttpPost]
         public IActionResult SetLanguage(string culture, string returnUrl)
         {
@@ -18,14 +21,6 @@ namespace Championship_Control_System.Areas.Customer.Controllers
             );
             return LocalRedirect(returnUrl);
         }
-
-      
-        //
-        public IActionResult Index()
-        {
-            return View();
-        }
-
 
     }
 }

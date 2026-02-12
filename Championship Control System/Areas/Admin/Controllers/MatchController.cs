@@ -101,6 +101,8 @@ namespace Championship_Control_System.Areas.Admin.Controllers
                 existingMatch.MatchDate = match.MatchDate;
                 //Ticket Price
                 existingMatch.TicketPrice = match.TicketPrice;
+                //Available Ticket
+                existingMatch.AvailableTicket = match.AvailableTicket;
                 existingMatch.HomeGoals = match.HomeGoals;
                 existingMatch.AwayGoals = match.AwayGoals;
                 existingMatch.AvailableTicket = match.AvailableTicket;

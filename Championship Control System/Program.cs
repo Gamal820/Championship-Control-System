@@ -3,7 +3,7 @@ using Championship_Control_System.DataAccess;
 using Championship_Control_System.Models;
 using Championship_Control_System.Repositories;
 using Championship_Control_System.Repositories.IRepositories;
-using Championship_Control_System.Utitlies; 
+using Championship_Control_System.Utitlies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
@@ -14,7 +14,6 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
               ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 
 builder.Services.RegisterConfig(connectionString);
-
 
 builder.Services.AddControllersWithViews();
 
@@ -34,7 +33,10 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
+app.MapStaticAssets();
 app.MapControllerRoute(
     name: "default",
-    pattern: "{area=Admin}/{controller=Team}/{action=Index}/{id?}");
+    pattern: "{area=Customer}/{controller=Home}/{action=Index}/{id?}")
+    .WithStaticAssets();
+
 app.Run();

@@ -99,7 +99,7 @@ namespace Championship_Control_System.Areas.Admin.Controllers
                 if (existingMatch is null) return NotFound();
 
                 existingMatch.MatchDate = match.MatchDate;
-                existingMatch.TicketPrice = match.TicketPrice;
+                //Ticket Price
                 existingMatch.TicketPrice = match.TicketPrice;
                 existingMatch.HomeGoals = match.HomeGoals;
                 existingMatch.AwayGoals = match.AwayGoals;

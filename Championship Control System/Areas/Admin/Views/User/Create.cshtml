@@ -75,10 +75,10 @@
                     <div class="mb-3">
                         <label asp-for="Role" class="form-label">Select Role *</label>
                         <select asp-for="Role" class="form-select" size="4">
-                            <option value="@UserRole.CUSTOMER_ROLE" selected>@UserRole.CUSTOMER_ROLE</option>
-                            <option value="@UserRole.EMPLOYEE_ROLE">@UserRole.EMPLOYEE_ROLE</option>
-                            <option value="@UserRole.ADMIN_ROLE">@UserRole.ADMIN_ROLE</option>
-                            <option value="@UserRole.SUPER_ADMIN_ROLE">@UserRole.SUPER_ADMIN_ROLE</option>
+                            <option value="@SD.FanRole" selected>@SD.FanRole</option>
+                            <option value="@SD.TeamManagerRole">@SD.TeamManagerRole</option>
+                            <option value="@SD.TournamentManagerRole">@SD.TournamentManagerRole</option>
+                            <option value="@SD.SuperAdminRole">@SD.SuperAdminRole</option>
                         </select>
                         <span asp-validation-for="Role" class="text-danger"></span>
                     </div>

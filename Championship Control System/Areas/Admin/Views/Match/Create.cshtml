@@ -55,6 +55,10 @@
                                 <label class="form-label fw-bold">Championship</label>
                                 <select asp-for="ChampionshipId" class="form-select" asp-items="ViewBag.Championships"></select>
                             </div>
+                            <div class="col-md-4 mb-3">
+                                <label asp-for="TicketPrice" class="form-label fw-bold">Ticket Price</label>
+                                <input asp-for="TicketPrice" type="number" class="form-control" />
+                            </div>
                         </div>
 
                         <div class="d-flex gap-2 mt-4">

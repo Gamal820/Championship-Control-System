@@ -23,9 +23,11 @@
                             <th>Date</th>
                             <th>Home Team</th>
                             <th>Away Team</th>
+                            <th>Ticket Price</th>
                             <th>Stadium</th>
                             <th>Championship</th>
                             <th>Status</th>
+                           
                             <th class="text-center">Actions</th>
                         </tr>
                     </thead>
@@ -36,6 +38,7 @@
                                 <td>@item.MatchDate?.ToString("dd MMM yyyy")</td>
                                 <td class="fw-bold">@item.HomeTeam?.TeamName</td>
                                 <td class="fw-bold">@item.AwayTeam?.TeamName</td>
+                                <td class="fw-bold">@item.TicketPrice</td>
                                 <td>
                                     <i class="bi bi-geo-alt-fill me-1 text-danger"></i>
                                     @item.Stadium?.StadiumName

@@ -17,7 +17,7 @@ public partial class Match
 
     public string? Status { get; set; }
 
-    public decimal TicketPrice { get; set; }
+    public decimal? TicketPrice { get; set; }
 
     public int? StadiumId { get; set; }
 

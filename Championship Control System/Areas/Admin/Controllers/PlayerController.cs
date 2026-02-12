@@ -8,7 +8,6 @@ namespace Championship_Control_System.Areas.Admin.Controllers
     [Area(areaName: "Admin")]
     public class PlayerController : Controller
     {
-
         private readonly IRepository<Player> _playerRepository;
         private readonly IRepository<Team> _teamRepository;
 
@@ -21,7 +20,6 @@ namespace Championship_Control_System.Areas.Admin.Controllers
         public async Task<IActionResult> Index(CancellationToken cancellationToken)
         {
             var player = await _playerRepository.GetAsync(include: q => q.Include(t => t.Team), tracked: false, cancellationToken: cancellationToken);
-
             return View(player);
         }
 
@@ -29,11 +27,9 @@ namespace Championship_Control_System.Areas.Admin.Controllers
         {
             var teams = await _teamRepository.GetAsync(tracked: false, cancellationToken: cancellationToken);
             ViewBag.Teams = new SelectList(teams, "TeamId", "TeamName");
-
             ViewBag.Positions = new SelectList(new List<string> { "Goalkeeper", "Defender", "Midfielder", "Forward" });
 
             return View(new Player());
-
         }
 
         [HttpPost]
@@ -43,6 +39,7 @@ namespace Championship_Control_System.Areas.Admin.Controllers
             {
                 var imgName = Guid.NewGuid().ToString() + Path.GetExtension(img.FileName);
                 var imgPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", "players", imgName);
+
                 using (var stream = System.IO.File.Create(imgPath))
                 {
                     await img.CopyToAsync(stream, cancellationToken);
@@ -50,6 +47,7 @@ namespace Championship_Control_System.Areas.Admin.Controllers
 
                 player.Img = "/images/players/" + imgName;
             }
+
             if (ModelState.IsValid)
             {
                 await _playerRepository.AddAsync(player, cancellationToken);
@@ -58,9 +56,13 @@ namespace Championship_Control_System.Areas.Admin.Controllers
                 TempData["Success"] = "Player created successfully.";
                 return RedirectToAction(nameof(Index));
             }
+
+            var teams = await _teamRepository.GetAsync(tracked: false, cancellationToken: cancellationToken);
+            ViewBag.Teams = new SelectList(teams, "TeamId", "TeamName");
+            ViewBag.Positions = new SelectList(new List<string> { "Goalkeeper", "Defender", "Midfielder", "Forward" });
+
             return View(player);
         }
-
 
         public async Task<IActionResult> Edit(int id, CancellationToken cancellationToken)
         {
@@ -73,40 +75,41 @@ namespace Championship_Control_System.Areas.Admin.Controllers
 
             var teams = await _teamRepository.GetAsync(tracked: false, cancellationToken: cancellationToken);
             ViewBag.Teams = new SelectList(teams, "TeamId", "TeamName");
-
             ViewBag.Positions = new SelectList(new List<string> { "Goalkeeper", "Defender", "Midfielder", "Forward" });
 
             return View(player);
         }
+
         [HttpPost]
         public async Task<IActionResult> Edit(Player player, IFormFile? img, CancellationToken cancellationToken)
         {
-            var existingPlayer = await _playerRepository.GetOneAsync(e => e.PlayerId == player.PlayerId, include: q => q.Include(t => t.Team), cancellationToken: cancellationToken);
+            var existingPlayer = await _playerRepository.GetOneAsync(e => e.PlayerId == player.PlayerId, cancellationToken: cancellationToken);
 
             if (existingPlayer is null)
                 return NotFound();
-
 
             if (img is not null)
             {
                 var imgName = Guid.NewGuid().ToString() + Path.GetExtension(img.FileName);
                 var imgPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", "players", imgName);
-                using (var stream = System.IO.File.Create(imgPath))
-                {
-                    await img.CopyToAsync(stream, cancellationToken);
-                }
 
-                if (existingPlayer.Img is not null)
+                if (!string.IsNullOrEmpty(existingPlayer.Img))
                 {
-                    var oldPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", "players", existingPlayer.Img);
+                    var oldPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", existingPlayer.Img.TrimStart('/'));
                     if (System.IO.File.Exists(oldPath))
                     {
                         System.IO.File.Delete(oldPath);
                     }
                 }
 
+                using (var stream = System.IO.File.Create(imgPath))
+                {
+                    await img.CopyToAsync(stream, cancellationToken);
+                }
+
                 existingPlayer.Img = "/images/players/" + imgName;
             }
+
             if (ModelState.IsValid)
             {
                 existingPlayer.Fname = player.Fname;
@@ -121,6 +124,11 @@ namespace Championship_Control_System.Areas.Admin.Controllers
                 TempData["Success"] = "Player updated successfully.";
                 return RedirectToAction(nameof(Index));
             }
+
+            var teams = await _teamRepository.GetAsync(tracked: false, cancellationToken: cancellationToken);
+            ViewBag.Teams = new SelectList(teams, "TeamId", "TeamName");
+            ViewBag.Positions = new SelectList(new List<string> { "Goalkeeper", "Defender", "Midfielder", "Forward" });
+
             return View(player);
         }
 
@@ -130,12 +138,21 @@ namespace Championship_Control_System.Areas.Admin.Controllers
 
             if (player is not null)
             {
+                if (!string.IsNullOrEmpty(player.Img))
+                {
+                    var imgPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", player.Img.TrimStart('/'));
+                    if (System.IO.File.Exists(imgPath))
+                    {
+                        System.IO.File.Delete(imgPath);
+                    }
+                }
+
                 _playerRepository.Delete(player);
                 await _playerRepository.CommitAsync(cancellationToken);
+                TempData["Success"] = "Player deleted successfully.";
             }
-            TempData["Success"] = "Player deleted successfully.";
+
             return RedirectToAction(nameof(Index));
         }
-
     }
 }

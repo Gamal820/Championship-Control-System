@@ -1,0 +1,48 @@
+﻿@{
+    ViewData["Title"] = "Match Schedule";
+}
+
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h3 class="fw-bold text-primary border-bottom border-3 border-primary pb-2">Match Schedule</h3>
+        <div class="btn-group">
+            <button class="btn btn-outline-primary active">All</button>
+            <button class="btn btn-outline-primary">Today</button>
+            <button class="btn btn-outline-primary">Upcoming</button>
+        </div>
+    </div>
+
+    <!-- Match Card Group -->
+    <div class="mb-5">
+        <h5 class="text-muted mb-3"><i class="far fa-calendar-alt"></i> Week 10 - 15 February 2024</h5>
+
+        <div class="card shadow-sm border-0 mb-3">
+            <div class="card-body py-3">
+                <div class="row align-items-center text-center">
+                    <div class="col-md-4 col-5">
+                        <div class="d-flex align-items-center justify-content-end">
+                            <span class="fw-bold me-2">Zamalek SC</span>
+                            <img src="/images/teams/zamalek.png" width="45" alt="Team Logo">
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-2">
+                        <div class="bg-light rounded px-3 py-2">
+                            <span class="fw-bold h4 mb-0">0 - 2</span>
+                            <div class="small text-danger">Finished</div>
+                        </div>
+                        <div class="small text-muted mt-1">7:00 PM</div>
+                    </div>
+                    <div class="col-md-4 col-5">
+                        <div class="d-flex align-items-center justify-content-start">
+                            <img src="/images/teams/ahly.png" width="45" alt="Team Logo">
+                            <span class="fw-bold ms-2">Al Ahly SC</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer bg-white border-top-0 text-center pb-3">
+                <a href="/Customer/Match/Details/1" class="text-decoration-none small text-primary">Match Details <i class="fas fa-chevron-left ms-1"></i></a>
+            </div>
+        </div>
+    </div>
+</div>

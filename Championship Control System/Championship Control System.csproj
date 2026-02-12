@@ -5,6 +5,7 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <RootNamespace>Championship_Control_System</RootNamespace>
+    <UserSecretsId>ca80616c-a81c-4c82-8e5d-ef31e84d82e8</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>

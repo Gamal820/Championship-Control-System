@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Stripe.Checkout;
 
 
 namespace Championship_Control_System.Areas.Customer.Controllers
@@ -130,31 +131,30 @@ namespace Championship_Control_System.Areas.Customer.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> Checkout(CancellationToken cancellationToken)
+        public async Task<IActionResult> Pay(CancellationToken cancellationToken)
         {
-            // Get current logged-in user
             var user = await _userManager.GetUserAsync(User);
             if (user is null) return NotFound();
 
-            // Get user's cart items including related Match
-            var cartItems = (await _cartRepo.GetAsync(x => x.UserId == user.Id,include: q => q.Include(c => c.Match),
+            // Load cart + match (and optionally teams for nice messages)
+            var cartItems = (await _cartRepo.GetAsync(x => x.UserId == user.Id,
+                include: q => q.Include(c => c.Match).ThenInclude(m => m.HomeTeam)
+                    .Include(c => c.Match).ThenInclude(m => m.AwayTeam),
                 cancellationToken: cancellationToken
             )).ToList();
 
-            
             if (!cartItems.Any())
             {
                 TempData["error-notification"] = "Cart is empty.";
                 return RedirectToAction("Index");
             }
 
-            // Calculate total tickets needed per match
+            // Validate availability before payment
             var requiredPerMatch = cartItems
                 .GroupBy(x => x.MatchId)
                 .Select(g => new { MatchId = g.Key, Needed = g.Sum(x => x.Count) })
                 .ToList();
 
-            // Validate available tickets for each match
             foreach (var r in requiredPerMatch)
             {
                 var match = cartItems.First(x => x.MatchId == r.MatchId).Match;
@@ -172,14 +172,93 @@ namespace Championship_Control_System.Areas.Customer.Controllers
                 }
             }
 
-            // Deduct available tickets for each match
+            // Build Stripe Checkout Session
+            var options = new SessionCreateOptions
+            {
+                PaymentMethodTypes = new List<string> { "card" },
+                Mode = "payment",
+
+               
+                SuccessUrl = $"{Request.Scheme}://{Request.Host}/Customer/Cart/StripeSuccess?session_id={{CHECKOUT_SESSION_ID}}",
+                CancelUrl = $"{Request.Scheme}://{Request.Host}/Customer/Cart/StripeCancel",
+
+                LineItems = new List<SessionLineItemOptions>()
+            };
+
+            foreach (var item in cartItems)
+            {
+                var match = item.Match;
+                var name = $"{match?.HomeTeam?.TeamName ?? "Home"} vs {match?.AwayTeam?.TeamName ?? "Away"}";
+                var unitPrice = item.Price; // EGP
+
+                // Stripe expects minor units (cents): EGP uses 2 decimals
+                var unitAmount = (long)Math.Round(unitPrice * 100m);
+
+                options.LineItems.Add(new SessionLineItemOptions
+                {
+                    Quantity = item.Count,
+                    PriceData = new SessionLineItemPriceDataOptions
+                    {
+                        Currency = "egp",
+                        UnitAmount = unitAmount,
+                        ProductData = new SessionLineItemPriceDataProductDataOptions
+                        {
+                            Name = name
+                        }
+                    }
+                });
+            }
+
+            var service = new SessionService();
+            var session = await service.CreateAsync(options, cancellationToken: cancellationToken);
+
+            
+            return Redirect(session.Url);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> StripeSuccess(string session_id, CancellationToken cancellationToken)
+        {
+           
+
+            var user = await _userManager.GetUserAsync(User);
+            if (user is null) return NotFound();
+
+            var cartItems = (await _cartRepo.GetAsync(
+                x => x.UserId == user.Id,
+                include: q => q.Include(c => c.Match),
+                cancellationToken: cancellationToken
+            )).ToList();
+
+            if (!cartItems.Any())
+            {
+                TempData["error-notification"] = "Cart is empty.";
+                return RedirectToAction("Index");
+            }
+
+            var requiredPerMatch = cartItems
+                .GroupBy(x => x.MatchId)
+                .Select(g => new { MatchId = g.Key, Needed = g.Sum(x => x.Count) })
+                .ToList();
+
             foreach (var r in requiredPerMatch)
             {
                 var match = cartItems.First(x => x.MatchId == r.MatchId).Match;
-                match!.AvailableTicket = (match.AvailableTicket ?? 0) - r.Needed;
+                var available = match?.AvailableTicket ?? 0;
+
+                if (available < r.Needed)
+                {
+                    TempData["error-notification"] = $"Not enough tickets available for match #{r.MatchId}.";
+                    return RedirectToAction("Index");
+                }
             }
 
-            // Create Ticket records and clear cart
+            foreach (var r in requiredPerMatch)
+            {
+                var match = cartItems.First(x => x.MatchId == r.MatchId).Match!;
+                match.AvailableTicket = (match.AvailableTicket ?? 0) - r.Needed;
+            }
+
             foreach (var item in cartItems)
             {
                 for (int i = 0; i < item.Count; i++)
@@ -197,11 +276,9 @@ namespace Championship_Control_System.Areas.Customer.Controllers
                 _cartRepo.Delete(item);
             }
 
-            // Save changes
             await _cartRepo.CommitAsync(cancellationToken);
 
-            // Redirect to success page
-            TempData["success-notification"] = "Checkout completed successfully!";
+            TempData["success-notification"] = "Payment successful! Tickets booked.";
             return RedirectToAction("Success", "Cart", new { area = "Customer" });
         }
 
@@ -211,6 +288,15 @@ namespace Championship_Control_System.Areas.Customer.Controllers
         {
             return View();
         }
+
+
+        [HttpGet]
+        public IActionResult StripeCancel()
+        {
+            TempData["error-notification"] = "Payment was cancelled.";
+            return RedirectToAction("Index");
+        }
+
 
 
     }

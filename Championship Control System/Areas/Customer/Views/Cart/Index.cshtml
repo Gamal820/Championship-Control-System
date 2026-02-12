@@ -177,15 +177,13 @@
                             <span class="fw-bold">@subtotal.ToString("0.00") EGP</span>
                         </div>
 
-                        <form asp-area="Customer"
-                              asp-controller="Cart"
-                              asp-action="Checkout"
-                              method="post">
+                        <form asp-area="Customer" asp-controller="Cart" asp-action="Pay" method="post">
                             @Html.AntiForgeryToken()
                             <button type="submit" class="btn btn-primary w-100">
-                                Checkout
+                                Pay with Stripe
                             </button>
                         </form>
+
 
 
 

@@ -37,7 +37,7 @@
                             {
                                 Standing = t,
                                 Draws = t.Played - t.Won - t.Lost, 
-                                Points = (t.Won * 3) + ((t.Played - t.Won - t.Lost) * 1) 
+                                Points = (t.Won * 3) + (t.Draw * 1)  
                             })
                             .OrderByDescending(t => t.Points)
                             .ThenByDescending(t => t.Standing.GoalDifference)
@@ -49,9 +49,11 @@
                         @foreach (var item in fullTable)
                         {
                             string rowClass = "";
-                            if (position == 1) rowClass = "table-success-soft"; 
-                            if (position > fullTable.Count - 3) rowClass = "table-danger-soft"; 
-
+                            if (position == 1) rowClass = "table-success-soft";
+                            if(fullTable.Count > 3 && position > fullTable.Count - 3)
+                                                {
+                                rowClass = "table-danger-soft";
+                            }
                             <tr class="@rowClass border-bottom">
                                 <td class="fw-bold">@position</td>
                                 <td class="text-start ps-4">
@@ -94,7 +96,6 @@
 </div>
 
 <style>
-    /* ألوان خفيفة للصفوف المميزة */
     .table-success-soft {
         background-color: rgba(25, 135, 84, 0.1) !important;
     }

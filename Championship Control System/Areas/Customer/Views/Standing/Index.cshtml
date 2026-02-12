@@ -46,7 +46,7 @@
                                     .Select(t => new
                                     {
                                         Standing = t,
-                                        Points = (t.Won * 3) + ((t.Played - t.Won - t.Lost) * 1)
+                                        Points = (t.Won * 3) + (t.Draw * 1)
                                     })
                                     .OrderByDescending(t => t.Points)
                                     .ThenByDescending(t => t.Standing.GoalDifference)

@@ -1,5 +1,5 @@
 ﻿using Championship_Control_System.Models;
-using Championship_Control_System.Utilities;
+using Championship_Control_System.Utitlies;
 using Championship_Control_System.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 namespace Championship_Control_System.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    [Authorize(Roles = $"{UserRole.SUPER_ADMIN_ROLE},{UserRole.ADMIN_ROLE}")]
+    [Authorize(Roles = SD.SuperAdminRole)]
     public class UserController : Controller
     {
         private readonly UserManager<ApplicationUser> _userManager;
@@ -38,7 +38,7 @@ namespace Championship_Control_System.Areas.Admin.Controllers
             foreach (var user in users)
             {
                 var roles = await _userManager.GetRolesAsync(user);
-                var userRole = roles.FirstOrDefault() ?? UserRole.CUSTOMER_ROLE;
+                var userRole = roles.FirstOrDefault() ?? SD.FanRole;
 
                 if (!string.IsNullOrEmpty(role) && role != "All" && userRole != role)
                     continue;
@@ -57,7 +57,7 @@ namespace Championship_Control_System.Areas.Admin.Controllers
                 });
             }
 
-            ViewData["Roles"] = new List<string> { UserRole.SUPER_ADMIN_ROLE, UserRole.ADMIN_ROLE, UserRole.EMPLOYEE_ROLE, UserRole.CUSTOMER_ROLE };
+            ViewData["Roles"] = new List<string> { SD.SuperAdminRole, SD.TournamentManagerRole, SD.TeamManagerRole, SD.FanRole };
             ViewData["CurrentSearch"] = search;
             ViewData["CurrentRole"] = role;
 
@@ -113,7 +113,7 @@ namespace Championship_Control_System.Areas.Admin.Controllers
             if (user == null) return NotFound();
 
             var roles = await _userManager.GetRolesAsync(user);
-            ViewBag.Role = roles.FirstOrDefault() ?? UserRole.CUSTOMER_ROLE;
+            ViewBag.Role = roles.FirstOrDefault() ?? SD.FanRole;
 
             return View(user);
         }
@@ -125,7 +125,7 @@ namespace Championship_Control_System.Areas.Admin.Controllers
             var user = await _userManager.FindByIdAsync(id);
             if (user == null) return NotFound();
 
-            if (await _userManager.IsInRoleAsync(user, UserRole.SUPER_ADMIN_ROLE))
+            if (await _userManager.IsInRoleAsync(user, SD.SuperAdminRole))
             {
                 TempData["Error"] = "You cannot block a Super Admin!";
                 return RedirectToAction(nameof(Index));

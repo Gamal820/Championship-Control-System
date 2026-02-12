@@ -68,7 +68,7 @@ namespace Championship_Control_System.Areas.Identity.Controllers
             await _emailSender.SendEmailAsync(registerVM.Email, "Ecommerce 519 - Confirm Your Email!"
                 , $"<h1>Confirm Your Email By Clicking <a href='{link}'>Here</a></h1>");
 
-            await _userManager.AddToRoleAsync(user, SD.CUSTOMER_ROLE);
+            await _userManager.AddToRoleAsync(user, SD.FanRole);
 
             return RedirectToAction("Login");
         }

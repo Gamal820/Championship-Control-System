@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
@@ -6,6 +7,7 @@ using System.Threading.Tasks;
 namespace Championship_Control_System.Areas.Admin.Controllers
 {
     [Area(areaName: "Admin")]
+    [Authorize(Roles = $"{SD.SuperAdminRole},{SD.TeamManagerRole}")]
     public class PlayerController : Controller
     {
         private readonly IRepository<Player> _playerRepository;

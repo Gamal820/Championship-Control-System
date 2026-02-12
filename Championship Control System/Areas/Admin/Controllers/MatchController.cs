@@ -1,5 +1,6 @@
 ﻿using Championship_Control_System.Models;
 using Championship_Control_System.Repositories.IRepositories;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -11,6 +12,7 @@ using System.Threading.Tasks;
 namespace Championship_Control_System.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles = $"{SD.SuperAdminRole},{SD.TournamentManagerRole}")]
     public class MatchController : Controller
     {
         private readonly IRepository<Match> _matchRepository;
@@ -109,6 +111,7 @@ namespace Championship_Control_System.Areas.Admin.Controllers
                 existingMatch.AwayTeamId = match.AwayTeamId;
                 existingMatch.StadiumId = match.StadiumId;
                 existingMatch.ChampionshipId = match.ChampionshipId;
+                existingMatch.TicketPrice = match.TicketPrice;
 
                 await _matchRepository.CommitAsync(cancellationToken);
                 TempData["Success"] = "Match updated successfully.";

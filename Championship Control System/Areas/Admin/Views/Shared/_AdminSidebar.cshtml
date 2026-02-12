@@ -1,3 +1,6 @@
+@using Championship_Control_System.Utitlies
+@using Microsoft.AspNetCore.Identity
+
 <aside class="sidebar" id="sidebar">
     <div class="sidebar-header">
         <a href="/" class="sidebar-brand">
@@ -11,7 +14,7 @@
 
     <div class="sidebar-menu">
         <ul class="nav flex-column">
-            <!-- Dashboard -->
+
             <li class="nav-item">
                 <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Dashboard" ? "active" : "")" asp-controller="Dashboard" asp-action="Index">
                     <i class="bi bi-speedometer2"></i>
@@ -19,112 +22,119 @@
                 </a>
             </li>
 
-            <li class="nav-header">Tournament Core</li>
+            @if (User.IsInRole(SD.SuperAdminRole) || User.IsInRole(SD.TournamentManagerRole) || User.IsInRole(SD.TeamManagerRole))
+            {
+                <li class="nav-header">Tournament Core</li>
+            }
 
-            <!-- Tournaments & Leagues -->
-            <li class="nav-item">
-                <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Tournament" ? "active" : "")" asp-controller="Tournament" asp-action="Index">
-                    <i class="bi bi-award"></i>
-                    <span>Tournaments & Leagues</span>
-                </a>
-            </li>
+            @if (User.IsInRole(SD.SuperAdminRole) || User.IsInRole(SD.TournamentManagerRole))
+            {
+                <li class="nav-item">
+                    <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Championship" ? "active" : "")" asp-controller="Championship" asp-action="Index">
+                        <i class="bi bi-award"></i>
+                        <span>Tournaments & Leagues</span>
+                    </a>
+                </li>
+            }
 
-            <!-- Stadiums/Venues -->
-            <li class="nav-item">
-                <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Stadium" ? "active" : "")" asp-controller="Stadium" asp-action="Index">
-                    <i class="bi bi-geo-alt"></i>
-                    <span>Stadiums & Venues</span>
-                </a>
-            </li>
+            @if (User.IsInRole(SD.SuperAdminRole) || User.IsInRole(SD.TeamManagerRole))
+            {
+                <li class="nav-item">
+                    <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Stadium" ? "active" : "")" asp-controller="Stadium" asp-action="Index">
+                        <i class="bi bi-geo-alt"></i>
+                        <span>Stadiums & Venues</span>
+                    </a>
+                </li>
+            }
 
-            <li class="nav-header">Participants Management</li>
+            @if (User.IsInRole(SD.SuperAdminRole) || User.IsInRole(SD.TeamManagerRole))
+            {
+                <li class="nav-header">Participants Management</li>
 
-            <!-- Teams -->
-            <li class="nav-item">
-                <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Team" ? "active" : "")" asp-controller="Team" asp-action="Index">
-                    <i class="bi bi-shield-shaded"></i>
-                    <span>Teams</span>
-                </a>
-            </li>
+                <li class="nav-item">
+                    <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Team" ? "active" : "")" asp-controller="Team" asp-action="Index">
+                        <i class="bi bi-shield-shaded"></i>
+                        <span>Teams</span>
+                    </a>
+                </li>
 
-            <!-- Players -->
-            <li class="nav-item">
-                <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Player" ? "active" : "")" asp-controller="Player" asp-action="Index">
-                    <i class="bi bi-people-fill"></i>
-                    <span>Players</span>
-                </a>
-            </li>
-            <!-- Coach -->
-            <li class="nav-item">
-                <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Coach" ? "active" : "")" asp-controller="Coach" asp-action="Index">
-                    <i class="bi bi-people-fill"></i>
-                    <span>Coaches</span>
-                </a>
-            </li>
+                <li class="nav-item">
+                    <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Player" ? "active" : "")" asp-controller="Player" asp-action="Index">
+                        <i class="bi bi-people-fill"></i>
+                        <span>Players</span>
+                    </a>
+                </li>
 
-            <li class="nav-header">Match Center</li>
+                <li class="nav-item">
+                    <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Coach" ? "active" : "")" asp-controller="Coach" asp-action="Index">
+                        <i class="bi bi-person-badge-fill"></i> <span>Coaches</span>
+                    </a>
+                </li>
+            }
 
-            <!-- Match Scheduling -->
-            <li class="nav-item">
-                <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Match" ? "active" : "")" asp-controller="Match" asp-action="Index">
-                    <i class="bi bi-calendar-event"></i>
-                    <span>Match Fixtures</span>
-                </a>
-            </li>
+            @if (User.IsInRole(SD.SuperAdminRole) || User.IsInRole(SD.TournamentManagerRole))
+            {
+                <li class="nav-header">Match Center</li>
 
-            <!-- Match Events (Goals, Cards, etc.) -->
-            <li class="nav-item">
-                <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "MatchEvent" ? "active" : "")" asp-controller="MatchEvent" asp-action="Index">
-                    <i class="bi bi- card-list"></i>
-                    <span>Match Events & Scores</span>
-                </a>
-            </li>
+                <li class="nav-item">
+                    <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Match" ? "active" : "")" asp-controller="Match" asp-action="Index">
+                        <i class="bi bi-calendar-event"></i>
+                        <span>Match Fixtures</span>
+                    </a>
+                </li>
 
-            <li class="nav-header">Stats & Standings</li>
+                <li class="nav-item">
+                    <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "MatchEvent" ? "active" : "")" asp-controller="MatchEvent" asp-action="Index">
+                        <i class="bi bi-card-list"></i>
+                        <span>Match Events & Scores</span>
+                    </a>
+                </li>
+            }
 
-            <!-- League Tables -->
-            <li class="nav-item">
-                <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Standing" ? "active" : "")" asp-controller="Standing" asp-action="Index">
-                    <i class="bi bi-list-ol"></i>
-                    <span>League Standings</span>
-                </a>
-            </li>
+            @if (User.IsInRole(SD.SuperAdminRole))
+            {
+                <li class="nav-header">Stats & Standings</li>
 
-            <!-- Player Statistics -->
-            <li class="nav-item">
-                <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Statistics" ? "active" : "")" asp-controller="Statistics" asp-action="Index">
-                    <i class="bi bi-bar-chart-line"></i>
-                    <span>Top Scorers & Assists</span>
-                </a>
-            </li>
+                <li class="nav-item">
+                    <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Standing" ? "active" : "")" asp-controller="Standing" asp-action="Index">
+                        <i class="bi bi-list-ol"></i>
+                        <span>League Standings</span>
+                    </a>
+                </li>
 
-            <li class="nav-header">Ticketing System</li>
+                <li class="nav-item">
+                    <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Statistics" ? "active" : "")" asp-controller="Statistics" asp-action="Index">
+                        <i class="bi bi-bar-chart-line"></i>
+                        <span>Top Scorers & Assists</span>
+                    </a>
+                </li>
 
-            <!-- Ticket Management -->
-            <li class="nav-item">
-                <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Ticket" ? "active" : "")" asp-controller="Ticket" asp-action="Index">
-                    <i class="bi bi-ticket-perforated"></i>
-                    <span>Manage Tickets</span>
-                </a>
-            </li>
+                <li class="nav-header">Ticketing System</li>
 
-            <!-- Bookings -->
-            <li class="nav-item">
-                <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Booking" ? "active" : "")" asp-controller="Booking" asp-action="Index">
-                    <i class="bi bi-cart-check"></i>
-                    <span>Fan Bookings</span>
-                </a>
-            </li>
+                <li class="nav-item">
+                    <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Ticket" ? "active" : "")" asp-controller="Ticket" asp-action="Index">
+                        <i class="bi bi-ticket-perforated"></i>
+                        <span>Manage Tickets</span>
+                    </a>
+                </li>
 
-            <li class="nav-header">Administration</li>
+                <li class="nav-item">
+                    <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Booking" ? "active" : "")" asp-controller="Booking" asp-action="Index">
+                        <i class="bi bi-cart-check"></i>
+                        <span>Fan Bookings</span>
+                    </a>
+                </li>
 
-            <!-- Users & Roles -->
-            <li class="nav-item">
-                <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "User" ? "active" : "")" asp-controller="User" asp-action="Index">
-                    <i class="bi bi-person-lock"></i>
-                    <span>User Access (RBAC)</span>
-                </a>
-            </li>
+                <li class="nav-header">Administration</li>
+
+                <li class="nav-item">
+                    <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "User" ? "active" : "")" asp-controller="User" asp-action="Index">
+                        <i class="bi bi-person-lock"></i>
+                        <span>User Access (RBAC)</span>
+                    </a>
+                </li>
+            }
+
         </ul>
     </div>
 

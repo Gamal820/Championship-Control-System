@@ -1,14 +1,18 @@
 ﻿using Championship_Control_System.Models;
 using Championship_Control_System.Repositories.IRepositories;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace Championship_Control_System.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles = $"{SD.SuperAdminRole},{SD.TournamentManagerRole}")]
     public class MatchController : Controller
     {
         private readonly IRepository<Match> _matchRepository;
@@ -28,7 +32,6 @@ namespace Championship_Control_System.Areas.Admin.Controllers
             _championshipRepository = championshipRepository;
         }
 
-        // Index  
         public async Task<IActionResult> Index(CancellationToken cancellationToken)
         {
             var matches = await _matchRepository.GetAsync(
@@ -43,7 +46,6 @@ namespace Championship_Control_System.Areas.Admin.Controllers
             return View(matches);
         }
 
-        // Create  
         public async Task<IActionResult> Create(CancellationToken cancellationToken)
         {
             await LoadDropDowns(cancellationToken);
@@ -51,6 +53,7 @@ namespace Championship_Control_System.Areas.Admin.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Match match, CancellationToken cancellationToken)
         {
             if (match.HomeTeamId == match.AwayTeamId)
@@ -70,26 +73,21 @@ namespace Championship_Control_System.Areas.Admin.Controllers
             return View(match);
         }
 
-        //Edit 
         public async Task<IActionResult> Edit(int id, CancellationToken cancellationToken)
         {
             var match = await _matchRepository.GetOneAsync(
                 m => m.MatchId == id,
-                include: q => q
-                    .Include(m => m.HomeTeam)
-                    .Include(m => m.AwayTeam)
-                    .Include(m => m.Stadium)
-                    .Include(m => m.Championship),
                 cancellationToken: cancellationToken);
 
             if (match is null)
                 return NotFound();
 
-            await LoadDropDowns(cancellationToken, match);
+            await LoadDropDowns(cancellationToken);
             return View(match);
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(Match match, CancellationToken cancellationToken)
         {
             if (match.HomeTeamId == match.AwayTeamId)
@@ -97,16 +95,14 @@ namespace Championship_Control_System.Areas.Admin.Controllers
                 ModelState.AddModelError("", "Home team and Away team must be different.");
             }
 
-            var existingMatch = await _matchRepository.GetOneAsync(
-                m => m.MatchId == match.MatchId,
-                cancellationToken: cancellationToken);
-
-            if (existingMatch is null)
-                return NotFound();
-
             if (ModelState.IsValid)
             {
+                var existingMatch = await _matchRepository.GetOneAsync(m => m.MatchId == match.MatchId);
+                if (existingMatch is null) return NotFound();
+
                 existingMatch.MatchDate = match.MatchDate;
+                //Ticket Price
+                existingMatch.TicketPrice = match.TicketPrice;
                 existingMatch.HomeGoals = match.HomeGoals;
                 existingMatch.AwayGoals = match.AwayGoals;
                 existingMatch.AvailableTicket = match.AvailableTicket;
@@ -115,44 +111,52 @@ namespace Championship_Control_System.Areas.Admin.Controllers
                 existingMatch.AwayTeamId = match.AwayTeamId;
                 existingMatch.StadiumId = match.StadiumId;
                 existingMatch.ChampionshipId = match.ChampionshipId;
+                existingMatch.TicketPrice = match.TicketPrice;
 
                 await _matchRepository.CommitAsync(cancellationToken);
                 TempData["Success"] = "Match updated successfully.";
                 return RedirectToAction(nameof(Index));
             }
 
-            await LoadDropDowns(cancellationToken, match);
+            await LoadDropDowns(cancellationToken);
             return View(match);
         }
 
-        //  Delete  
         public async Task<IActionResult> Delete(int id, CancellationToken cancellationToken)
         {
-            var match = await _matchRepository.GetOneAsync(
-                m => m.MatchId == id,
-                cancellationToken: cancellationToken);
-
+            var match = await _matchRepository.GetOneAsync(m => m.MatchId == id);
             if (match is not null)
             {
                 _matchRepository.Delete(match);
                 await _matchRepository.CommitAsync(cancellationToken);
                 TempData["Success"] = "Match deleted successfully.";
             }
-
             return RedirectToAction(nameof(Index));
         }
 
-        // Helper method to load dropdown lists for Teams, Stadiums, and Championships
-        private async Task LoadDropDowns(CancellationToken cancellationToken, Match? match = null)
+        // الطريقة الأضمن لملء القوائم وتجنب NullReferenceException
+        private async Task LoadDropDowns(CancellationToken cancellationToken)
         {
-            var teams = await _teamRepository.GetAsync(tracked: false, cancellationToken: cancellationToken);
-            ViewBag.Teams = new SelectList(teams, "TeamId", "TeamName");
+            var teams = await _teamRepository.GetAsync(tracked: false, cancellationToken: cancellationToken) ?? new List<Team>();
+            ViewBag.Teams = teams.Select(t => new SelectListItem
+            {
+                Value = t.TeamId.ToString(),
+                Text = t.TeamName
+            }).ToList();
 
-            var stadiums = await _stadiumRepository.GetAsync(tracked: false, cancellationToken: cancellationToken);
-            ViewBag.Stadiums = new SelectList(stadiums, "StadiumId", "StadiumName");
+            var stadiums = await _stadiumRepository.GetAsync(tracked: false, cancellationToken: cancellationToken) ?? new List<Stadium>();
+            ViewBag.Stadiums = stadiums.Select(s => new SelectListItem
+            {
+                Value = s.StadiumId.ToString(),
+                Text = s.StadiumName
+            }).ToList();
 
-            var championships = await _championshipRepository.GetAsync(tracked: false, cancellationToken: cancellationToken);
-            ViewBag.Championships = new SelectList(championships, "ChampionshipId", "Name");
+            var championships = await _championshipRepository.GetAsync(tracked: false, cancellationToken: cancellationToken) ?? new List<Championship>();
+            ViewBag.Championships = championships.Select(c => new SelectListItem
+            {
+                Value = c.ChampionshipId.ToString(),
+                Text = c.ChampionshipName 
+            }).ToList();
         }
     }
 }

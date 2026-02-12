@@ -250,6 +250,9 @@ namespace Championship_Control_System.Migrations
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 
+                    b.Property<decimal?>("TicketPrice")
+                        .HasColumnType("decimal(18, 2)");
+
                     b.HasKey("MatchId")
                         .HasName("PK__Match__4218C837F1D022D7");
 
@@ -480,9 +483,6 @@ namespace Championship_Control_System.Migrations
 
                     b.Property<string>("SeatNumber")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<decimal?>("TicketPrice")
-                        .HasColumnType("decimal(18, 2)");
 
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)")

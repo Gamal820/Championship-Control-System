@@ -38,17 +38,15 @@ namespace Championship_Control_System
             });
 
             services.AddTransient<IEmailSender, EmailSender>();
-     
+
             services.AddScoped<IRepository<ApplicationUserOTP>, Repository<ApplicationUserOTP>>();
             services.AddScoped<IRepository<Stadium>, Repository<Stadium>>();
             services.AddScoped<IRepository<Team>, Repository<Team>>();
             services.AddScoped<IRepository<Coach>, Repository<Coach>>();
+            services.AddScoped<IRepository<Championship>, Repository<Championship>>();
+            services.AddScoped<IRepository<Player>, Repository<Player>>();
             services.AddScoped<IRepository<Match>, Repository<Match>>();
             services.AddScoped<IRepository<MatchEvent>, Repository<MatchEvent>>();
-
-          services.AddScoped<IRepository<Championship>, Repository<Championship>>();
-
-
 
 
             services.AddScoped<IDBInitializer, DBInitializer>();

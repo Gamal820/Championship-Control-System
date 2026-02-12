@@ -66,6 +66,8 @@ namespace Championship_Control_System.DataAccess
                 entity.Property(e => e.MatchDate).HasColumnType("datetime");
                 entity.Property(e => e.StadiumId).HasColumnName("StadiumID");
                 entity.Property(e => e.Status).HasMaxLength(20);
+                entity.Property(e => e.TicketPrice)
+                   .HasColumnType("decimal(18, 2)");
 
                 entity.HasOne(d => d.AwayTeam).WithMany(p => p.MatchAwayTeams)
                     .HasForeignKey(d => d.AwayTeamId)
@@ -178,9 +180,6 @@ namespace Championship_Control_System.DataAccess
                 entity.Property(e => e.BookingDate).HasDefaultValueSql("(getdate())").HasColumnType("datetime");
 
                 entity.Property(e => e.UserId).HasColumnName("UserID");
-
-                entity.Property(e => e.TicketPrice)
-                    .HasColumnType("decimal(18, 2)");
 
                 entity.HasOne(d => d.Match).WithMany(p => p.Tickets)
                     .HasForeignKey(d => d.MatchId)

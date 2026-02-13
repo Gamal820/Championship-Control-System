@@ -4,95 +4,87 @@
     ViewData["Title"] = "Create Match";
 }
 
-<div class="container mt-5">
+<div class="container-fluid p-4">
     <div class="row justify-content-center">
-        <div class="col-md-8">
+        <div class="col-md-10">
             <div class="card shadow border-0">
-                <div class="card-header bg-success text-white py-3">
-                    <h4 class="mb-0">
-                        <i class="bi bi-calendar-plus me-2"></i>Schedule New Match
-                    </h4>
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0"><i class="bi bi-plus-circle me-2"></i>Schedule New Match</h4>
                 </div>
                 <div class="card-body p-4">
-                    <form asp-action="Create" method="post">
-                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+                    <form asp-action="Create">
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
 
                         <div class="row">
                             <div class="col-md-6 mb-3">
-                                <label asp-for="MatchDate" class="form-label fw-bold">Match Date</label>
-                                <input asp-for="MatchDate" type="datetime-local" class="form-control" />
-                                <span asp-validation-for="MatchDate" class="text-danger"></span>
+                                <label asp-for="ChampionshipId" class="form-label fw-bold">Championship</label>
+                                <select asp-for="ChampionshipId" class="form-select" asp-items="ViewBag.Championships">
+                                    <option value="">-- Select Championship --</option>
+                                </select>
+                                <span asp-validation-for="ChampionshipId" class="text-danger"></span>
                             </div>
 
                             <div class="col-md-6 mb-3">
-                                <label asp-for="Status" class="form-label fw-bold">Status</label>
-                                <select asp-for="Status" class="form-select">
-                                    <option value="Scheduled">Scheduled</option>
-                                    <option value="Finished">Finished</option>
-                                    <option value="Cancelled">Cancelled</option>
-                                </select>
-                                <span asp-validation-for="Status" class="text-danger"></span>
+                                <label asp-for="MatchDate" class="form-label fw-bold">Date & Time</label>
+                                <input asp-for="MatchDate" class="form-control" type="datetime-local" />
+                                <span asp-validation-for="MatchDate" class="text-danger"></span>
                             </div>
                         </div>
 
+                        <hr />
+
                         <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label fw-bold">Home Team</label>
-                                <select asp-for="HomeTeamId" class="form-select" asp-items="(IEnumerable<SelectListItem>)ViewBag.Teams">
+                            <div class="col-md-5 mb-3">
+                                <label asp-for="HomeTeamId" class="form-label fw-bold text-success">Home Team</label>
+                                <select asp-for="HomeTeamId" class="form-select" asp-items="ViewBag.HomeTeams">
                                     <option value="">-- Select Home Team --</option>
                                 </select>
                                 <span asp-validation-for="HomeTeamId" class="text-danger"></span>
                             </div>
 
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label fw-bold">Away Team</label>
-                                <select asp-for="AwayTeamId" class="form-select" asp-items="(IEnumerable<SelectListItem>)ViewBag.Teams">
+                            <div class="col-md-2 d-flex align-items-center justify-content-center">
+                                <h4 class="fw-bold text-muted">VS</h4>
+                            </div>
+
+                            <div class="col-md-5 mb-3">
+                                <label asp-for="AwayTeamId" class="form-label fw-bold text-danger">Away Team</label>
+                                <select asp-for="AwayTeamId" class="form-select" asp-items="ViewBag.AwayTeams">
                                     <option value="">-- Select Away Team --</option>
                                 </select>
                                 <span asp-validation-for="AwayTeamId" class="text-danger"></span>
                             </div>
                         </div>
 
+                        <hr />
+
                         <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label fw-bold">Stadium</label>
-                                <select asp-for="StadiumId" class="form-select" asp-items="(IEnumerable<SelectListItem>)ViewBag.Stadiums">
+                            <div class="col-md-4 mb-3">
+                                <label asp-for="StadiumId" class="form-label fw-bold">Stadium</label>
+                                <select asp-for="StadiumId" class="form-select" asp-items="ViewBag.Stadiums">
                                     <option value="">-- Select Stadium --</option>
                                 </select>
                                 <span asp-validation-for="StadiumId" class="text-danger"></span>
                             </div>
 
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label fw-bold">Championship</label>
-                                <select asp-for="ChampionshipId" class="form-select" asp-items="(IEnumerable<SelectListItem>)ViewBag.Championships">
-                                    <option value="">-- Select Championship --</option>
-                                </select>
-                                <span asp-validation-for="ChampionshipId" class="text-danger"></span>
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
+                            <div class="col-md-4 mb-3">
                                 <label asp-for="TicketPrice" class="form-label fw-bold">Ticket Price</label>
-                                <input asp-for="TicketPrice" type="number" step="0.01" class="form-control" />
+                                <div class="input-group">
+                                    <span class="input-group-text">$</span>
+                                    <input asp-for="TicketPrice" class="form-control" placeholder="0.00" />
+                                </div>
                                 <span asp-validation-for="TicketPrice" class="text-danger"></span>
                             </div>
 
-                            <div class="col-md-6 mb-3">
-                                <label asp-for="AvailableTicket" class="form-label fw-bold">Available Ticket</label>
-                                <input asp-for="AvailableTicket" type="number" class="form-control" />
-                                <span asp-validation-for="AvailableTicket" class="text-danger"></span>
+                            <div class="col-md-4 mb-3">
+                                <label asp-for="AvailableTicket" class="form-label fw-bold">Available Tickets</label>
+                                <input asp-for="AvailableTicket" class="form-control" placeholder="Leave empty for Max Capacity" />
+                                <small class="text-muted">If empty, stadium capacity will be used.</small>
                             </div>
                         </div>
 
-
-                        <div class="d-flex gap-2 mt-4">
-                            <button type="submit" class="btn btn-success px-4">
-                                <i class="bi bi-check-circle me-1"></i> Save Match
-                            </button>
-                            <a asp-action="Index" class="btn btn-outline-secondary px-4">
-                                Cancel
-                            </a>
+                        <div class="d-flex justify-content-between mt-4">
+                            <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+                            <button type="submit" class="btn btn-primary px-5">Create Match</button>
                         </div>
                     </form>
                 </div>

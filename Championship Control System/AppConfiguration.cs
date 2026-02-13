@@ -51,6 +51,7 @@ namespace Championship_Control_System
             services.AddScoped<IRepository<Ticket>, Repository<Ticket>>();
            
 
+            services.AddScoped<IRepository<TeamStanding>, Repository<TeamStanding>>();
 
 
             services.AddScoped<IDBInitializer, DBInitializer>();

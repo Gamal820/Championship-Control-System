@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 namespace Championship_Control_System.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles = $"{SD.SuperAdminRole},{SD.TeamManagerRole}")]
     public class TeamController : Controller
     {
 

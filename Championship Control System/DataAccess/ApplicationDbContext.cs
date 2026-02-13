@@ -191,6 +191,9 @@ namespace Championship_Control_System.DataAccess
                     .WithMany(p => p.Tickets)
                     .HasForeignKey(d => d.UserId)
                     .HasConstraintName("FK_Ticket_User");
+
+                entity.Property(e => e.TicketPrice)
+                   .HasColumnType("decimal(18, 2)");
             });
 
             modelBuilder.Entity<CartItem>(entity =>

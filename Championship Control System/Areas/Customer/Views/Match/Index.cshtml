@@ -1,48 +1,86 @@
-﻿@{
+﻿@model IEnumerable<Championship_Control_System.Models.Match>
+
+@{
     ViewData["Title"] = "Match Schedule";
+    var filter = ViewBag.Filter as string ?? "All";
 }
 
-<div class="container">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h3 class="fw-bold text-primary border-bottom border-3 border-primary pb-2">Match Schedule</h3>
-        <div class="btn-group">
-            <button class="btn btn-outline-primary active">All</button>
-            <button class="btn btn-outline-primary">Today</button>
-            <button class="btn btn-outline-primary">Upcoming</button>
-        </div>
-    </div>
+<h2 class="text-primary fw-bold mb-4">
+    Match Schedule
+</h2>
 
-    <!-- Match Card Group -->
-    <div class="mb-5">
-        <h5 class="text-muted mb-3"><i class="far fa-calendar-alt"></i> Week 10 - 15 February 2024</h5>
+<!-- FILTER BUTTONS -->
+<div class="mb-4">
 
-        <div class="card shadow-sm border-0 mb-3">
-            <div class="card-body py-3">
-                <div class="row align-items-center text-center">
-                    <div class="col-md-4 col-5">
-                        <div class="d-flex align-items-center justify-content-end">
-                            <span class="fw-bold me-2">Zamalek SC</span>
-                            <img src="/images/teams/zamalek.png" width="45" alt="Team Logo">
-                        </div>
-                    </div>
-                    <div class="col-md-4 col-2">
-                        <div class="bg-light rounded px-3 py-2">
-                            <span class="fw-bold h4 mb-0">0 - 2</span>
-                            <div class="small text-danger">Finished</div>
-                        </div>
-                        <div class="small text-muted mt-1">7:00 PM</div>
-                    </div>
-                    <div class="col-md-4 col-5">
-                        <div class="d-flex align-items-center justify-content-start">
-                            <img src="/images/teams/ahly.png" width="45" alt="Team Logo">
-                            <span class="fw-bold ms-2">Al Ahly SC</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="card-footer bg-white border-top-0 text-center pb-3">
-                <a href="/Customer/Match/Details/1" class="text-decoration-none small text-primary">Match Details <i class="fas fa-chevron-left ms-1"></i></a>
-            </div>
-        </div>
-    </div>
+    <a asp-action="Index"
+       asp-route-filter="All"
+       class="btn @(filter=="All"?"btn-primary":"btn-outline-primary")">
+        All
+    </a>
+
+    <a asp-action="Index"
+       asp-route-filter="Today"
+       class="btn @(filter=="Today"?"btn-primary":"btn-outline-primary")">
+        Today
+    </a>
+
+    <a asp-action="Index"
+       asp-route-filter="Upcoming"
+       class="btn @(filter=="Upcoming"?"btn-primary":"btn-outline-primary")">
+        Upcoming
+    </a>
+
 </div>
+
+
+@foreach (var match in Model)
+{
+    <div class="card mb-3 shadow-sm p-3">
+
+        <div class="row align-items-center text-center">
+
+            <!-- HOME -->
+            <div class="col-md-4">
+                <img src="@match.HomeTeam?.Logo"
+                     width="60" height="60"
+                     style="object-fit:contain" />
+
+                <h5 class="fw-bold mt-2">
+                    @match.HomeTeam?.TeamName
+                </h5>
+            </div>
+
+            <!-- SCORE -->
+            <div class="col-md-4">
+
+                <h4 class="fw-bold">
+                    @(match.HomeGoals ?? 0)
+                    -
+                    @(match.AwayGoals ?? 0)
+                </h4>
+
+                <span class="text-danger">
+                    @match.Status
+                </span>
+
+                <div class="text-muted">
+                    @match.MatchDate?.ToString("hh:mm tt")
+                </div>
+
+            </div>
+
+            <!-- AWAY -->
+            <div class="col-md-4">
+                <img src="@match.AwayTeam?.Logo"
+                     width="60" height="60"
+                     style="object-fit:contain" />
+
+                <h5 class="fw-bold mt-2">
+                    @match.AwayTeam?.TeamName
+                </h5>
+            </div>
+
+        </div>
+
+    </div>
+}

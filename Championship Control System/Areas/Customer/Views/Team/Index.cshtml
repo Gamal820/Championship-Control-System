@@ -1,22 +1,53 @@
-﻿@{
-    ViewData["Title"] = "Clubs";
+﻿@model IEnumerable<Championship_Control_System.Models.Team>
+
+@{
+    ViewData["Title"] = "Teams";
 }
 
-<h3 class="fw-bold text-primary mb-4">Participating Clubs</h3>
+<h2 class="mb-4 text-primary fw-bold">
+    Participating Clubs
+</h2>
 
-<div class="row row-cols-1 row-cols-md-3 row-cols-lg-4 g-4">
-    <!-- Team Card -->
-    <div class="col">
-        <div class="card h-100 border-0 shadow-sm text-center p-3 hover-shadow" style="transition: 0.3s;">
-            <div class="py-4">
-                <img src="/images/teams/ahly.png" style="width: 100px; height: 100px; object-fit: contain;" alt="Team Logo">
+<div class="row">
+
+    @foreach (var team in Model)
+    {
+        <div class="col-md-4 mb-4">
+
+            <div class="card shadow-sm text-center p-3"
+                 style="border-radius:15px;">
+
+                <!-- Logo -->
+                <img src="@(team.Logo ?? "/images/no-logo.png")"
+                     alt="Team Logo"
+                     width="90"
+                     height="90"
+                     class="mx-auto mb-3"
+                     style="object-fit:contain;" />
+
+                <!-- Name -->
+                <h5 class="fw-bold">
+                    @team.TeamName
+                </h5>
+
+                <!-- Stadium -->
+                <p class="text-muted mb-3">
+                    @(team.Stadium?.StadiumName ?? "No Stadium")
+                </p>
+
+                <!-- Button -->
+                <a asp-area="Customer"
+                   asp-controller="Team"
+                   asp-action="Details"
+                   asp-route-id="@team.TeamId"
+                   class="btn btn-outline-primary rounded-pill">
+
+                    View Profile
+                </a>
+
             </div>
-            <div class="card-body">
-                <h5 class="card-title fw-bold">Al Ahly SC</h5>
-                <p class="text-muted small">Cairo International Stadium</p>
-                <a href="/Customer/Team/Details/1" class="btn btn-outline-primary btn-sm rounded-pill px-4">View Profile</a>
-            </div>
+
         </div>
-    </div>
-    <!-- Repeat other teams here -->
+    }
+
 </div>

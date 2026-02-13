@@ -66,6 +66,15 @@
                 </li>
 
                 <li class="nav-item">
+                    <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Championship" ? "active" : "")"
+                       asp-controller="Championship" asp-action="Index">
+                        <i class="bi bi-trophy-fill"></i>
+                        <span>Championship</span>
+                    </a>
+                </li>
+
+
+                <li class="nav-item">
                     <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Coach" ? "active" : "")" asp-controller="Coach" asp-action="Index">
                         <i class="bi bi-person-badge-fill"></i> <span>Coaches</span>
                     </a>

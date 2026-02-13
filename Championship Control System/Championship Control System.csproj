@@ -9,6 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+	  <PackageReference Include="LazZiya.ExpressLocalization" Version="4.0.4" />
 	  <PackageReference Include="Stripe.net" Version="49.1.0" />
 
 	  <PackageReference Include="Mapster" Version="7.4.0" />

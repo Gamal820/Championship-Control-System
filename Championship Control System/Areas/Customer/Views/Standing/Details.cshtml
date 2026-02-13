@@ -89,9 +89,11 @@
     </div>
 
     <div class="mt-4">
-        <a asp-action="Index" class="btn btn-secondary">
-            <i class="bi bi-arrow-left me-2"></i>Back to All Leagues
-        </a>
+        <button class="btn btn-secondary"
+                onclick="location.href='@Url.Action("Index", "Standing", new { area = "Customer" })'">
+            <i class="bi bi-arrow-left me-2"></i>
+            Back to All Leagues
+        </button>
     </div>
 </div>
 

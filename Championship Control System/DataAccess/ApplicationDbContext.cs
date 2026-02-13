@@ -22,6 +22,8 @@ namespace Championship_Control_System.DataAccess
         public virtual DbSet<TeamStanding> TeamStandings { get; set; }
         public virtual DbSet<Ticket> Tickets { get; set; }
         public virtual DbSet<ApplicationUserOTP> ApplicationUserOTP { get; set; }
+        public virtual DbSet<CartItem> CartItems { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -190,6 +192,32 @@ namespace Championship_Control_System.DataAccess
                     .HasForeignKey(d => d.UserId)
                     .HasConstraintName("FK_Ticket_User");
             });
+
+            modelBuilder.Entity<CartItem>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.ToTable("CartItem");
+
+                entity.Property(e => e.Price).HasColumnType("decimal(18, 2)");
+
+                entity.Property(e => e.UserId).HasColumnName("UserID");
+                entity.Property(e => e.MatchId).HasColumnName("MatchID");
+
+                entity.HasOne(d => d.User)
+                    .WithMany()
+                    .HasForeignKey(d => d.UserId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasOne(d => d.Match)
+                    .WithMany()
+                    .HasForeignKey(d => d.MatchId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                // One row per match per user (instead of duplicate rows)
+                entity.HasIndex(e => new { e.UserId, e.MatchId }).IsUnique();
+            });
+
+
 
             modelBuilder.Entity<ApplicationUser>()
                 .HasMany(d => d.Events).WithMany(p => p.Users)

@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 using LazZiya.ExpressLocalization;
-using System.Globalization; // required for CultureInfo
+using System.Globalization; 
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,8 +21,7 @@ builder.Services.AddControllersWithViews()
     {
         options.ResourcesPath = "Resources";
 
-        // Configure RequestLocalizationOptions since ExpressLocalizationOptions
-        // does not expose SupportedCultures directly.
+        
         options.RequestLocalizationOptions = locOptions =>
         {
             var supported = new[] { "ar-EG", "en-US" }
@@ -32,7 +31,6 @@ builder.Services.AddControllersWithViews()
             locOptions.SupportedCultures = supported;
             locOptions.SupportedUICultures = supported;
 
-            // set default request culture (optional)
             locOptions.DefaultRequestCulture = new Microsoft.AspNetCore.Localization.RequestCulture("en-US");
         };
     });

@@ -35,6 +35,7 @@
                         @foreach (var item in Model)
                         {
                             <tr>
+                                <!-- Logo -->
                                 <td class="ps-4">
                                     @if (!string.IsNullOrEmpty(item.Logo))
                                     {
@@ -51,14 +52,19 @@
                                     }
                                 </td>
 
-                                <td class="fw-bold text-dark">@item.ChampionshipName</td>
+                                <!-- Name -->
+                                <td class="fw-bold text-body">@item.ChampionshipName</td>
 
-                                <td>@(string.IsNullOrWhiteSpace(item.Season) ? "N/A" : item.Season)</td>
+                                <!-- Season -->
+                                <td class="text-body">
+                                    @(string.IsNullOrWhiteSpace(item.Season) ? "N/A" : item.Season)
+                                </td>
 
+                                <!-- Country -->
                                 <td>
                                     @if (!string.IsNullOrWhiteSpace(item.Country))
                                     {
-                                        <span class="text-dark">
+                                        <span class="text-body">
                                             <i class="bi bi-geo-alt me-1"></i>@item.Country
                                         </span>
                                     }
@@ -68,10 +74,17 @@
                                     }
                                 </td>
 
-                                <td>@(item.StartDate?.ToString("yyyy-MM-dd") ?? "N/A")</td>
+                                <!-- Start Date -->
+                                <td class="text-body">
+                                    @(item.StartDate?.ToString("yyyy-MM-dd") ?? "N/A")
+                                </td>
 
-                                <td>@(item.EndDate?.ToString("yyyy-MM-dd") ?? "N/A")</td>
+                                <!-- End Date -->
+                                <td class="text-body">
+                                    @(item.EndDate?.ToString("yyyy-MM-dd") ?? "N/A")
+                                </td>
 
+                                <!-- Actions -->
                                 <td class="text-center">
                                     <div class="btn-group" role="group">
                                         <a asp-action="Edit" asp-route-id="@item.ChampionshipId"

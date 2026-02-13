@@ -23,7 +23,7 @@
                         <tr>
                             <th class="ps-4">Photo</th>
                             <th>Name</th>
-                            <th>BirthDate</th>
+                            <th>Age</th>
                             <th>Team</th>
                             <th class="text-center">Actions</th>
                         </tr>
@@ -49,14 +49,34 @@
                                     }
                                 </td>
 
-                                <td class="fw-bold text-dark">@item.Name</td>
+                                <!-- Name -->
+                                <td class="fw-bold text-body">@item.Name</td>
 
-                                <td>@(item.BirthData?.ToString("yyyy-MM-dd") ?? "N/A")</td>
+                                <!-- Age -->
+                                <td>
+                                    @if (item.BirthData != null)
+                                    {
+                                        var today = DateOnly.FromDateTime(DateTime.Today);
+                                        var age = today.Year - item.BirthData.Value.Year;
 
+                                        if (item.BirthData.Value > today.AddYears(-age))
+                                        {
+                                            age--;
+                                        }
+
+                                        <span class="text-body">@age Years</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">N/A</span>
+                                    }
+                                </td>
+
+                                <!-- Team -->
                                 <td>
                                     @if (item.Team != null)
                                     {
-                                        <span class="text-dark">
+                                        <span class="text-body">
                                             <i class="bi bi-shield-check me-1"></i>@item.Team.TeamName
                                         </span>
                                     }
@@ -66,6 +86,7 @@
                                     }
                                 </td>
 
+                                <!-- Actions -->
                                 <td class="text-center">
                                     <div class="btn-group" role="group">
                                         <a asp-action="Edit" asp-route-id="@item.CoachId"

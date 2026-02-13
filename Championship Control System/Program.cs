@@ -3,10 +3,13 @@ using Championship_Control_System.DataAccess;
 using Championship_Control_System.Models;
 using Championship_Control_System.Repositories;
 using Championship_Control_System.Repositories.IRepositories;
-using Championship_Control_System.Utitlies; 
+using Championship_Control_System.Utitlies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
+using LazZiya.ExpressLocalization;
+using System.Globalization; 
+using Stripe;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,9 +17,29 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
               ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 
 builder.Services.RegisterConfig(connectionString);
+builder.Services.AddControllersWithViews()
+    .AddExpressLocalization<SharedResource>(options =>
+    {
+        options.ResourcesPath = "Resources";
 
+        
+        options.RequestLocalizationOptions = locOptions =>
+        {
+            var supported = new[] { "ar-EG", "en-US" }
+                .Select(c => new CultureInfo(c))
+                .ToList();
+
+            locOptions.SupportedCultures = supported;
+            locOptions.SupportedUICultures = supported;
+
+            locOptions.DefaultRequestCulture = new Microsoft.AspNetCore.Localization.RequestCulture("en-US");
+        };
+    });
 
 builder.Services.AddControllersWithViews();
+//Stripe Settings
+builder.Services.Configure<StripeSettings>(builder.Configuration.GetSection("Stripe"));
+StripeConfiguration.ApiKey = builder.Configuration["Stripe:SecretKey"];
 
 var app = builder.Build();
 
@@ -27,14 +50,21 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
 app.UseStaticFiles();
+
+app.UseRequestLocalization();
+
 
 app.UseRouting();
 
 app.UseAuthentication();
 app.UseAuthorization();
 
+app.MapStaticAssets();
 app.MapControllerRoute(
     name: "default",
-    pattern: "{area=Admin}/{controller=Team}/{action=Index}/{id?}");
+    pattern: "{area=Customer}/{controller=Home}/{action=Index}/{id?}")
+    .WithStaticAssets();
+
 app.Run();

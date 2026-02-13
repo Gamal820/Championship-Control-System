@@ -1,14 +1,10 @@
-﻿using Championship_Control_System.Models;
-using Championship_Control_System.Repositories.IRepositories;
+﻿using Azure;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-
-namespace Championship_Control_System.Controllers
+namespace Championship_Control_System.Areas.Customer.Controllers
 {
-    [Area("Customer")]
+    [Area(areaName: "Customer")]
     public class HomeController : Controller
     {
         private readonly IRepository<Match> _matchRepository;
@@ -63,5 +59,16 @@ namespace Championship_Control_System.Controllers
 
             return View();
         }
+        [HttpPost]
+        public IActionResult SetLanguage(string culture, string returnUrl)
+        {
+            Response.Cookies.Append(
+                CookieRequestCultureProvider.DefaultCookieName,
+                CookieRequestCultureProvider.MakeCookieValue(new RequestCulture(culture)),
+                new CookieOptions { Expires = DateTimeOffset.UtcNow.AddYears(1) }
+            );
+            return LocalRedirect(returnUrl);
+        }
+
     }
 }

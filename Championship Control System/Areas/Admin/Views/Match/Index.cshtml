@@ -28,6 +28,10 @@
                         <tr>
                             <th>Championship</th>
                             <th>Date</th>
+                            <th>Home Team</th>
+                            <th>Away Team</th>
+                            <th>Ticket Price</th>
+                            <th>Available Tickets</th>
                             <th style="width: 35%;">Matchup</th>
                             <th>Stadium</th>
                             <th>Status</th>
@@ -38,6 +42,11 @@
                         @foreach (var item in Model)
                         {
                             <tr>
+                                <td>@item.MatchDate?.ToString("dd MMM yyyy")</td>
+                                <td class="fw-bold">@item.HomeTeam?.TeamName</td>
+                                <td class="fw-bold">@item.AwayTeam?.TeamName</td>
+                                <td class="fw-bold">@item.TicketPrice</td>
+                                <td class="fw-bold">@item.AvailableTicket</td>
                                 <td class="fw-bold text-secondary">
                                     @Html.DisplayFor(modelItem => item.Championship.ChampionshipName)
                                 </td>

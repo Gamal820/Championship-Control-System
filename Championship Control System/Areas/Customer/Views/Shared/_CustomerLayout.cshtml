@@ -81,6 +81,14 @@
                         </ul>
                     </li>
                     <li class="nav-item"><a class="nav-link" href="/Customer/Ticket/MyTickets">MyTickets</a></li>
+                    @if (User.IsInRole(SD.SuperAdminRole) || User.IsInRole(SD.TournamentManagerRole) || User.IsInRole(SD.TeamManagerRole))
+                    {
+                        <li class="nav-item ms-lg-2">
+                            <a class="btn btn-warning btn-sm fw-bold text-dark mt-lg-1" asp-area="Admin" asp-controller="Dashboard" asp-action="Index">
+                                <i class="fa-solid fa-user-shield me-1"></i> Dashboard
+                            </a>
+                        </li>
+                    }
                 </ul>
                 <div class="d-flex ms-lg-3">
                     <a href="/Identity/Account/Login" class="btn btn-outline-light btn-sm">Login</a>

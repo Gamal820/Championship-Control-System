@@ -1,0 +1,106 @@
+﻿@model Championship_Control_System.Models.Championship
+
+@{
+    ViewData["Title"] = Model.ChampionshipName + " Standings";
+}
+
+<div class="container py-5">
+    <div class="text-center mb-5">
+        @if (!string.IsNullOrEmpty(Model.Logo))
+        {
+            <img src="@Model.Logo" alt="League Logo" class="mb-3 shadow rounded-circle" style="width: 100px; height: 100px; object-fit: cover;">
+        }
+        <h1 class="fw-bold display-5">@Model.ChampionshipName</h1>
+        <p class="text-muted fs-5">Season @Model.Season &bull; @Model.Country</p>
+    </div>
+
+    <div class="card shadow border-0">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle text-center mb-0">
+                    <thead class="bg-primary text-white">
+                        <tr>
+                            <th class="py-3">Pos</th>
+                            <th class="py-3 text-start ps-4" style="width: 30%;">Team</th>
+                            <th class="py-3" title="Played">MP</th>
+                            <th class="py-3" title="Won">W</th>
+                            <th class="py-3" title="Draw">D</th>
+                            <th class="py-3" title="Lost">L</th>
+                            <th class="py-3" title="Goal Difference">GD</th>
+                            <th class="py-3 fw-bold" title="Points">Pts</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{
+                            var fullTable = Model.TeamStandings
+                            .Select(t => new
+                            {
+                                Standing = t,
+                                Draws = t.Played - t.Won - t.Lost, 
+                                Points = (t.Won * 3) + (t.Draw * 1)  
+                            })
+                            .OrderByDescending(t => t.Points)
+                            .ThenByDescending(t => t.Standing.GoalDifference)
+                            .ToList();
+
+                            int position = 1;
+                        }
+
+                        @foreach (var item in fullTable)
+                        {
+                            string rowClass = "";
+                            if (position == 1) rowClass = "table-success-soft";
+                            if(fullTable.Count > 3 && position > fullTable.Count - 3)
+                                                {
+                                rowClass = "table-danger-soft";
+                            }
+                            <tr class="@rowClass border-bottom">
+                                <td class="fw-bold">@position</td>
+                                <td class="text-start ps-4">
+                                    <div class="d-flex align-items-center">
+                                        <img src="@(item.Standing.Team?.Logo ?? "https://via.placeholder.com/30")"
+                                             class="rounded-circle me-3 shadow-sm" width="35" height="35">
+                                        <span class="fw-bold text-dark">@item.Standing.Team?.TeamName</span>
+                                    </div>
+                                </td>
+                                <td>@item.Standing.Played</td>
+                                <td class="text-success">@item.Standing.Won</td>
+                                <td class="text-secondary">@item.Draws</td>
+                                <td class="text-danger">@item.Standing.Lost</td>
+                                <td class="fw-bold">
+                                    @if (item.Standing.GoalDifference > 0)
+                                    {
+                                        <span class="text-success">+@item.Standing.GoalDifference</span>
+                                    }
+                                    else
+                                    {
+
+                                        <span>@item.Standing.GoalDifference</span>
+                                    }
+                                </td>
+                                <td class="fw-bolder fs-5 text-primary">@item.Points</td>
+                            </tr>
+                            position++;
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-4">
+        <a asp-action="Index" class="btn btn-secondary">
+            <i class="bi bi-arrow-left me-2"></i>Back to All Leagues
+        </a>
+    </div>
+</div>
+
+<style>
+    .table-success-soft {
+        background-color: rgba(25, 135, 84, 0.1) !important;
+    }
+
+    .table-danger-soft {
+        background-color: rgba(220, 53, 69, 0.1) !important;
+    }
+</style>

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Championship_Control_System.Models;
 
@@ -13,6 +14,10 @@ public partial class MatchEvent
 
     public int? MatchId { get; set; }
 
+    public int? PlayerId { get; set; }
+
+    [ForeignKey("PlayerId")]
+    public virtual Player? Player { get; set; }
     public virtual Match? Match { get; set; }
 
     public virtual ICollection<ApplicationUser> Users { get; set; } = new List<ApplicationUser>();

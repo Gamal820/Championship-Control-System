@@ -4,6 +4,7 @@ using Championship_Control_System.DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Championship_Control_System.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260212183119_AddDrawToStanding")]
+    partial class AddDrawToStanding
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -287,15 +290,10 @@ namespace Championship_Control_System.Migrations
                     b.Property<int?>("Minute")
                         .HasColumnType("int");
 
-                    b.Property<int?>("PlayerId")
-                        .HasColumnType("int");
-
                     b.HasKey("EventId")
                         .HasName("PK__MatchEve__7944C87044D9C5EC");
 
                     b.HasIndex("MatchId");
-
-                    b.HasIndex("PlayerId");
 
                     b.ToTable("MatchEvent", (string)null);
                 });
@@ -722,13 +720,7 @@ namespace Championship_Control_System.Migrations
                         .HasForeignKey("MatchId")
                         .HasConstraintName("FK_Event_Match");
 
-                    b.HasOne("Championship_Control_System.Models.Player", "Player")
-                        .WithMany()
-                        .HasForeignKey("PlayerId");
-
                     b.Navigation("Match");
-
-                    b.Navigation("Player");
                 });
 
             modelBuilder.Entity("Championship_Control_System.Models.Player", b =>

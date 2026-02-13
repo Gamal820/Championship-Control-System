@@ -31,7 +31,7 @@ namespace Championship_Control_System.Areas.Customer.Controllers
                 cancellationToken: cancellationToken
             );
 
-            matches = matches.Where(m => m.Status == "Scheduled").ToList();
+            matches = matches.Where(m => m.Status == "Upcoming").ToList();
             return View(matches);
         }
 

@@ -1,0 +1,97 @@
+﻿@model IEnumerable<MyTicketGroupVM>
+@{
+    Layout = "_CustomerLayout";
+}
+
+<div class="container py-4">
+
+    <div class="d-flex align-items-center justify-content-between mb-3">
+        <div>
+            <h2 class="fw-bold mb-0">🎟️ My Tickets</h2>
+            <small class="text-muted">All tickets you purchased</small>
+        </div>
+
+        <a asp-area="Customer" asp-controller="Ticket" asp-action="Index" class="btn btn-outline-primary">
+            + Book More
+        </a>
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-light border d-flex align-items-center">
+            <span class="me-2">ℹ️</span>
+            <div>You have no tickets yet.</div>
+        </div>
+    }
+    else
+    {
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white border-0 py-3">
+                <div class="d-flex align-items-center justify-content-between">
+                    <span class="fw-semibold">Your Tickets</span>
+                    <span class="text-muted small">@Model.Sum(x => x.Quantity) ticket(s)</span>
+                </div>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table align-middle mb-0 tickets-table">
+                    <thead class="table-light">
+                        <tr>
+                            <th class="ps-4">Date</th>
+                            <th>Match</th>
+                            <th>Stadium</th>
+                            <th class="text-center">Total Tickets</th>
+                            <th class="text-end">Unit Price</th>
+                            <th class="text-end pe-4">Total</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        @foreach (var t in Model)
+                        {
+                            <tr class="ticket-row">
+                                <td class="ps-4 text-muted" style="white-space:nowrap;">
+                                    @(t.LastBookingDate?.ToLocalTime().ToString("dd MMM yyyy, hh:mm tt") ?? "-")
+                                </td>
+
+                                <td class="fw-semibold">
+                                    @t.MatchName
+                                </td>
+
+                                <td class="text-muted">
+                                    @t.StadiumName
+                                </td>
+
+                                <td class="text-center">
+                                    <span class="badge bg-secondary">@t.Quantity</span>
+                                </td>
+
+                                <td class="text-end">
+                                    <span class="badge bg-primary-subtle text-primary fw-bold px-3 py-2">
+                                        @($"{t.UnitPrice:0.00} EGP")
+                                    </span>
+                                </td>
+
+                                <td class="text-end pe-4 fw-bold">
+                                    @($"{t.TotalPrice:0.00} EGP")
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+
+                </table>
+            </div>
+        </div>
+    }
+</div>
+
+<style>
+    .tickets-table .ticket-row:hover {
+        background: #fafafa;
+        transition: .15s ease-in-out;
+    }
+
+    .tickets-table td, .tickets-table th {
+        border-color: #f0f0f0 !important;
+    }
+</style>

@@ -33,12 +33,8 @@ namespace Championship_Control_System.Areas.Customer.Controllers
             if (user is null) return NotFound();
 
             var cart = await _cartRepo.GetAsync(
-                e => e.UserId == user.Id,
-                include: q => q
-                    .Include(x => x.Match)
-                    .ThenInclude(m => m.HomeTeam)
-                    .Include(x => x.Match)
-                    .ThenInclude(m => m.AwayTeam)
+                e => e.UserId == user.Id,include: q => q.Include(x => x.Match).ThenInclude(m => m.HomeTeam)
+                    .Include(x => x.Match).ThenInclude(m => m.AwayTeam)
                     .Include(x => x.Match)
                     .ThenInclude(m => m.Stadium),
                 cancellationToken: cancellationToken
@@ -136,7 +132,7 @@ namespace Championship_Control_System.Areas.Customer.Controllers
             var user = await _userManager.GetUserAsync(User);
             if (user is null) return NotFound();
 
-            // Load cart + match (and optionally teams for nice messages)
+            // Load cart + match and optionally teams 
             var cartItems = (await _cartRepo.GetAsync(x => x.UserId == user.Id,
                 include: q => q.Include(c => c.Match).ThenInclude(m => m.HomeTeam)
                     .Include(c => c.Match).ThenInclude(m => m.AwayTeam),
@@ -219,13 +215,10 @@ namespace Championship_Control_System.Areas.Customer.Controllers
         [HttpGet]
         public async Task<IActionResult> StripeSuccess(string session_id, CancellationToken cancellationToken)
         {
-           
-
             var user = await _userManager.GetUserAsync(User);
             if (user is null) return NotFound();
 
-            var cartItems = (await _cartRepo.GetAsync(
-                x => x.UserId == user.Id,
+            var cartItems = (await _cartRepo.GetAsync(x => x.UserId == user.Id,
                 include: q => q.Include(c => c.Match),
                 cancellationToken: cancellationToken
             )).ToList();
@@ -280,6 +273,8 @@ namespace Championship_Control_System.Areas.Customer.Controllers
 
             TempData["success-notification"] = "Payment successful! Tickets booked.";
             return RedirectToAction("Success", "Cart", new { area = "Customer" });
+
+
         }
 
 

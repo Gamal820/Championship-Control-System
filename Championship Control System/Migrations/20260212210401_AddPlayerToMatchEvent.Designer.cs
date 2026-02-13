@@ -4,6 +4,7 @@ using Championship_Control_System.DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Championship_Control_System.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260212210401_AddPlayerToMatchEvent")]
+    partial class AddPlayerToMatchEvent
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -135,42 +138,6 @@ namespace Championship_Control_System.Migrations
                     b.HasIndex("ApplicationUserId");
 
                     b.ToTable("ApplicationUserOTP");
-                });
-
-            modelBuilder.Entity("Championship_Control_System.Models.CartItem", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("Count")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("MatchId")
-                        .HasColumnType("int")
-                        .HasColumnName("MatchID");
-
-                    b.Property<decimal>("Price")
-                        .HasColumnType("decimal(18, 2)");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)")
-                        .HasColumnName("UserID");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("MatchId");
-
-                    b.HasIndex("UserId", "MatchId")
-                        .IsUnique();
-
-                    b.ToTable("CartItem", (string)null);
                 });
 
             modelBuilder.Entity("Championship_Control_System.Models.Championship", b =>
@@ -528,9 +495,6 @@ namespace Championship_Control_System.Migrations
                     b.Property<string>("SeatNumber")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<decimal?>("TicketPrice")
-                        .HasColumnType("decimal(18, 2)");
-
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)")
                         .HasColumnName("UserID");
@@ -721,25 +685,6 @@ namespace Championship_Control_System.Migrations
                         .IsRequired();
 
                     b.Navigation("ApplicationUser");
-                });
-
-            modelBuilder.Entity("Championship_Control_System.Models.CartItem", b =>
-                {
-                    b.HasOne("Championship_Control_System.Models.Match", "Match")
-                        .WithMany()
-                        .HasForeignKey("MatchId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Championship_Control_System.Models.ApplicationUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Match");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Championship_Control_System.Models.Match", b =>

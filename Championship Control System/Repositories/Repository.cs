@@ -35,6 +35,7 @@ namespace Championship_Control_System.Repositories
       
         public async Task<IEnumerable<T>> GetAsync(
             Expression<Func<T, bool>>? expression = null,
+            Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null,
             Func<IQueryable<T>, IQueryable<T>>? include = null, 
             bool tracked = true,
             CancellationToken cancellationToken = default)
@@ -47,6 +48,10 @@ namespace Championship_Control_System.Repositories
             if (include is not null)
             {
                 query = include(query);
+            }
+            if (orderBy is not null)
+            {
+                return await orderBy(query).ToListAsync(cancellationToken);
             }
 
             if (!tracked)

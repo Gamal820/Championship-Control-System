@@ -1,30 +1,71 @@
-﻿@{
+﻿@model IEnumerable<Championship_Control_System.Models.Match>
+
+@{
     Layout = "_CustomerLayout";
 }
 
 <h3 class="fw-bold mb-4">Available Matches for Booking</h3>
 
-<div class="row">
-    <!-- Repeat for each available match -->
-    <div class="col-md-6 mb-4">
-        <div class="card border-0 shadow-sm overflow-hidden">
-            <div class="row g-0">
-                <div class="col-4 bg-primary text-white d-flex flex-column justify-content-center align-items-center">
-                    <h2 class="mb-0">15</h2>
-                    <span>December</span>
-                </div>
-                <div class="col-8">
-                    <div class="card-body">
-                        <h5 class="card-title fw-bold">Al Ahly vs Pyramids</h5>
-                        <p class="card-text text-muted mb-1"><i class="fas fa-map-marker-alt"></i> Cairo International Stadium</p>
-                        <p class="card-text text-muted mb-2"><i class="fas fa-clock"></i> 07:00 PM</p>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <span class="text-success fw-bold">Starting from 100 EGP</span>
-                            <a href="/Customer/Ticket/Book/1" class="btn btn-primary btn-sm">Book Now</a>
+@if (Model is null || !Model.Any())
+{
+    <div class="alert alert-info">
+        No matches available right now.
+    </div>
+}
+else
+{
+    <div class="row">
+        @foreach (var item in Model)
+        {
+            <div class="col-md-6 mb-4">
+                <div class="card border-0 shadow-sm overflow-hidden">
+                    <div class="row g-0">
+                        <div class="col-4 bg-primary text-white d-flex flex-column justify-content-center align-items-center">
+                            <h2 class="mb-0">@item.MatchDate?.Day</h2>
+                            <span>@item.MatchDate?.ToString("MMMM")</span>
+                        </div>
+
+                        <div class="col-8">
+                            <div class="card-body">
+                                <h5 class="card-title fw-bold">
+                                    @item.HomeTeam?.TeamName vs @item.AwayTeam?.TeamName
+                                </h5>
+
+                                <p class="card-text text-muted mb-1">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                    @item.Stadium?.StadiumName
+                                </p>
+
+                                <p class="card-text text-muted mb-2">
+                                    <i class="fas fa-clock"></i>
+                                    @item.MatchDate?.ToString("hh:mm tt")
+                                </p>
+
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="text-success fw-bold">
+                                        Starting from @(item.TicketPrice ?? 0) EGP
+                                    </span>
+
+                                    <form asp-area="Customer"
+                                          asp-controller="Cart"
+                                          asp-action="AddToCart"
+                                          method="post"
+                                          class="d-inline">
+
+                                        <input type="hidden" name="matchId" value="@item.MatchId" />
+                                        <input type="hidden" name="count" value="1" />
+
+                                        <button type="submit" class="btn btn-primary btn-sm">
+                                            Book Now
+                                        </button>
+                                    </form>
+                                </div>
+
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
+        }
     </div>
-</div>
+}

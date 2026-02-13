@@ -3,12 +3,13 @@ using Championship_Control_System.DataAccess;
 using Championship_Control_System.Models;
 using Championship_Control_System.Repositories;
 using Championship_Control_System.Repositories.IRepositories;
-using Championship_Control_System.Utitlies; 
+using Championship_Control_System.Utitlies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 using LazZiya.ExpressLocalization;
 using System.Globalization; 
+using Stripe;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -34,6 +35,12 @@ builder.Services.AddControllersWithViews()
             locOptions.DefaultRequestCulture = new Microsoft.AspNetCore.Localization.RequestCulture("en-US");
         };
     });
+
+builder.Services.AddControllersWithViews();
+//Stripe Settings
+builder.Services.Configure<StripeSettings>(builder.Configuration.GetSection("Stripe"));
+StripeConfiguration.ApiKey = builder.Configuration["Stripe:SecretKey"];
+
 var app = builder.Build();
 
 if (!app.Environment.IsDevelopment())
@@ -54,7 +61,10 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
+app.MapStaticAssets();
 app.MapControllerRoute(
     name: "default",
-pattern: "{area=Customer}/{controller=Home}/{action=Index}/{id?}"); 
+    pattern: "{area=Customer}/{controller=Home}/{action=Index}/{id?}")
+    .WithStaticAssets();
+
 app.Run();

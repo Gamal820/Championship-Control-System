@@ -15,9 +15,9 @@ public partial class Match
 
     public int? AvailableTicket { get; set; }
 
-    public string? Status { get; set; }
-
     public decimal? TicketPrice { get; set; }
+
+    public string? Status { get; set; }
 
     public int? StadiumId { get; set; }
 

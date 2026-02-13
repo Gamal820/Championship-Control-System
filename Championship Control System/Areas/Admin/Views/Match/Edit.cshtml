@@ -4,25 +4,97 @@
     ViewData["Title"] = "Edit Match";
 }
 
-<div class="container mt-5">
+<div class="container-fluid p-4">
     <div class="row justify-content-center">
-        <div class="col-md-8">
+        <div class="col-md-10">
             <div class="card shadow border-0">
-                <div class="card-header bg-primary text-white py-3">
-                    <h4 class="mb-0">
-                        <i class="bi bi-pencil-square me-2"></i>Edit Match
-                    </h4>
+                <div class="card-header bg-warning text-dark">
+                    <h4 class="mb-0"><i class="bi bi-pencil-square me-2"></i>Update Match Details</h4>
                 </div>
                 <div class="card-body p-4">
-                    <form asp-action="Edit" method="post">
+                    <form asp-action="Edit">
                         <input type="hidden" asp-for="MatchId" />
-                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
 
-                        
-                        <partial name="Create" model="Model" />
+                        <div class="card bg-light border-0 mb-4">
+                            <div class="card-body">
+                                <h5 class="card-title text-center text-primary fw-bold mb-3">Match Result & Status</h5>
+                                <div class="row align-items-end">
+
+                                    <div class="col-md-3 mb-3">
+                                        <label asp-for="HomeGoals" class="form-label fw-bold text-center w-100">Home Goals</label>
+                                        <input asp-for="HomeGoals" class="form-control text-center fs-4 fw-bold" type="number" min="0" />
+                                    </div>
+
+                                    <div class="col-md-6 mb-3">
+                                        <label asp-for="Status" class="form-label fw-bold text-center w-100">Current Status</label>
+                                        <select asp-for="Status" class="form-select text-center fw-bold">
+                                            <option value="Upcoming">Upcoming (Not Started)</option>
+                                            <option value="Live">Live (Playing Now)</option>
+                                            <option value="Finished" class="text-success">Finished (Calculate Points)</option>
+                                            <option value="Postponed" class="text-danger">Postponed</option>
+                                        </select>
+                                        <small class="text-muted d-block text-center mt-1">Select <b>"Finished"</b> to update League Table automatically.</small>
+                                    </div>
+
+                                    <div class="col-md-3 mb-3">
+                                        <label asp-for="AwayGoals" class="form-label fw-bold text-center w-100">Away Goals</label>
+                                        <input asp-for="AwayGoals" class="form-control text-center fs-4 fw-bold" type="number" min="0" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <hr />
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="ChampionshipId" class="form-label fw-bold">Championship</label>
+                                <select asp-for="ChampionshipId" class="form-select" asp-items="ViewBag.Championships"></select>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="MatchDate" class="form-label fw-bold">Date & Time</label>
+                                <input asp-for="MatchDate" class="form-control" type="datetime-local" />
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="HomeTeamId" class="form-label fw-bold">Home Team</label>
+                                <select asp-for="HomeTeamId" class="form-select" asp-items="ViewBag.HomeTeams"></select>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="AwayTeamId" class="form-label fw-bold">Away Team</label>
+                                <select asp-for="AwayTeamId" class="form-select" asp-items="ViewBag.AwayTeams"></select>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label asp-for="StadiumId" class="form-label fw-bold">Stadium</label>
+                                <select asp-for="StadiumId" class="form-select" asp-items="ViewBag.Stadiums"></select>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label asp-for="TicketPrice" class="form-label fw-bold">Price</label>
+                                <input asp-for="TicketPrice" class="form-control" />
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label asp-for="AvailableTicket" class="form-label fw-bold">Tickets</label>
+                                <input asp-for="AvailableTicket" class="form-control" />
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-between mt-4">
+                            <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+                            <button type="submit" class="btn btn-warning px-5">Update Match</button>
+                        </div>
                     </form>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

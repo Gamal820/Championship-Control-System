@@ -67,9 +67,9 @@
                                 @{
                                     var badgeColor = user.Role switch
                                     {
-                                        UserRole.SUPER_ADMIN_ROLE => "bg-danger",
-                                        UserRole.ADMIN_ROLE => "bg-warning text-dark",
-                                        UserRole.EMPLOYEE_ROLE => "bg-info text-dark",
+                                        SD.SuperAdminRole => "bg-danger",
+                                        SD.TournamentManagerRole => "bg-warning text-dark",
+                                        SD.TeamManagerRole => "bg-info text-dark",
                                         _ => "bg-secondary"
                                     };
                                 }
@@ -87,9 +87,9 @@
                             </td>
                             <td>@(user.DateOfBirth?.ToString("yyyy-MM-dd") ?? "N/A")</td>
                             <td>
-                                @if (user.Role == UserRole.SUPER_ADMIN_ROLE)
+                                @if (user.Role == SD.SuperAdminRole)
                                 {
-                                    @if(User.IsInRole(UserRole.SUPER_ADMIN_ROLE))
+                                    @if(User.IsInRole(SD.SuperAdminRole))
                                     {
                                         <a asp-action="Details" asp-route-id="@user.Id" class="btn btn-sm btn-outline-primary" title="Details">
                                             <i class="bi bi-eye"></i>

@@ -1,0 +1,105 @@
+﻿@model IEnumerable<Championship_Control_System.Models.Championship>
+
+@{
+    ViewData["Title"] = "League Standings";
+}
+
+<div class="container py-4">
+    <div class="d-flex align-items-center mb-4">
+        <h2 class="fw-bold text-primary"><i class="bi bi-table me-2"></i>League Standings</h2>
+    </div>
+
+    <div class="row">
+        @foreach (var league in Model)
+        {
+            
+
+            <div class="col-md-6 mb-4">
+                <div class="card shadow-sm border-0 h-100">
+                    <div class="card-header bg-white d-flex justify-content-between align-items-center py-3">
+                        <div class="d-flex align-items-center">
+                            @if (!string.IsNullOrEmpty(league.Logo))
+                            {
+                                <img src="@league.Logo" alt="Logo" class="me-2" style="width: 30px; height: 30px; object-fit: contain;">
+                            }
+                            <h5 class="mb-0 fw-bold">@league.ChampionshipName</h5>
+                        </div>
+                        <a asp-action="Details" asp-route-id="@league.ChampionshipId" class="btn btn-sm btn-outline-primary rounded-pill">
+                            Full Table <i class="bi bi-arrow-right"></i>
+                        </a>
+                    </div>
+
+                    <div class="card-body p-0">
+                        <table class="table table-striped mb-0 text-center" style="font-size: 0.9rem;">
+                            <thead class="bg-light">
+                                <tr>
+                                    <th>#</th>
+                                    <th class="text-start">Team</th>
+                                    <th>PL</th>
+                                    <th>GD</th>
+                                    <th>Pts</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @{
+                                    var topTeams = league.TeamStandings
+                                    .Select(t => new
+                                    {
+                                        Standing = t,
+                                        Points = (t.Won * 3) + (t.Draw * 1)
+                                    })
+                                    .OrderByDescending(t => t.Points)
+                                    .ThenByDescending(t => t.Standing.GoalDifference)
+                                    .Take(3) 
+                                    .ToList();
+
+                                    int rank = 1;
+                                }
+
+                                @foreach (var item in topTeams)
+                                {
+                                    <tr>
+                                        <td class="fw-bold">@rank</td>
+                                        <td class="text-start">
+                                            <div class="d-flex align-items-center">
+                                                <img src="@(item.Standing.Team?.Logo ?? "https://via.placeholder.com/20")"
+                                                     class="rounded-circle me-2" width="20" height="20">
+                                                <span class="fw-semibold">@item.Standing.Team?.TeamName</span>
+                                            </div>
+                                        </td>
+                                        <td>@item.Standing.Played</td>
+                                        <td>
+                                            @if (item.Standing.GoalDifference > 0)
+                                            {
+                                                <span class="text-success">+@item.Standing.GoalDifference</span>
+                                            }
+                                            else if (item.Standing.GoalDifference < 0)
+                                            {
+
+                                                <span class="text-danger">@item.Standing.GoalDifference</span>
+                                            }
+                                            else
+                                            {
+
+                                                <span>0</span>
+                                            }
+                                        </td>
+                                        <td class="fw-bold text-dark">@item.Points</td>
+                                    </tr>
+                                    rank++;
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+
+                    @if (league.TeamStandings.Count > 3)
+                    {
+                        <div class="card-footer bg-white text-center border-0">
+                            <small class="text-muted">... and @(league.TeamStandings.Count - 3) more teams</small>
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+    </div>
+</div>

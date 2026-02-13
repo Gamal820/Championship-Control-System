@@ -7,8 +7,6 @@ public partial class Ticket
 {
     public int TicketId { get; set; }
 
-    public decimal? TicketPrice { get; set; }
-
     public string? SeatNumber { get; set; }
 
     public DateTime? BookingDate { get; set; }

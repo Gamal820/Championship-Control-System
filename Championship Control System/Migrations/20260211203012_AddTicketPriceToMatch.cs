@@ -10,12 +10,15 @@ namespace Championship_Control_System.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropColumn(
+                name: "TicketPrice",
+                table: "Ticket");
+
             migrationBuilder.AddColumn<decimal>(
                 name: "TicketPrice",
                 table: "Match",
                 type: "decimal(18,2)",
-                nullable: false,
-                defaultValue: 0m);
+                nullable: true);
         }
 
         /// <inheritdoc />
@@ -24,6 +27,12 @@ namespace Championship_Control_System.Migrations
             migrationBuilder.DropColumn(
                 name: "TicketPrice",
                 table: "Match");
+
+            migrationBuilder.AddColumn<decimal>(
+                name: "TicketPrice",
+                table: "Ticket",
+                type: "decimal(18,2)",
+                nullable: true);
         }
     }
 }

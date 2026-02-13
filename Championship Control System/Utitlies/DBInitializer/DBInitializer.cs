@@ -30,10 +30,10 @@ namespace Championship_Control_System.Utitlies.DBInitilizer
 
                 if (_roleManager.Roles.IsNullOrEmpty())
                 {
-                    _roleManager.CreateAsync(new(SD.SUPER_ADMIN_ROLE)).GetAwaiter().GetResult();
-                    _roleManager.CreateAsync(new(SD.ADMIN_ROLE)).GetAwaiter().GetResult();
-                    _roleManager.CreateAsync(new(SD.EMPLOYEE_ROLE)).GetAwaiter().GetResult();
-                    _roleManager.CreateAsync(new(SD.CUSTOMER_ROLE)).GetAwaiter().GetResult();
+                    _roleManager.CreateAsync(new(SD.SuperAdminRole)).GetAwaiter().GetResult();
+                    _roleManager.CreateAsync(new(SD.TournamentManagerRole)).GetAwaiter().GetResult();
+                    _roleManager.CreateAsync(new(SD.TeamManagerRole)).GetAwaiter().GetResult();
+                    _roleManager.CreateAsync(new(SD.FanRole)).GetAwaiter().GetResult();
 
                     _userManager.CreateAsync(new()
                     {
@@ -45,7 +45,7 @@ namespace Championship_Control_System.Utitlies.DBInitilizer
                     }, "Gamal123$").GetAwaiter().GetResult();
 
                     var user = _userManager.FindByNameAsync("SuperAdmin").GetAwaiter().GetResult();
-                    _userManager.AddToRoleAsync(user!, SD.SUPER_ADMIN_ROLE).GetAwaiter().GetResult();
+                    _userManager.AddToRoleAsync(user!, SD.SuperAdminRole).GetAwaiter().GetResult();
                 }
             }
             catch (Exception ex)

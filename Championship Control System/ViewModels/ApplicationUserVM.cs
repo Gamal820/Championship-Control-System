@@ -13,5 +13,7 @@ namespace Championship_Control_System.ViewModels
         public string? CurrentPassword { get; set; }
         [DataType(DataType.Password)]
         public string? NewPassword { get; set; }
+        public string? ConfirmNewPassword { get; set; }
+
     }
 }

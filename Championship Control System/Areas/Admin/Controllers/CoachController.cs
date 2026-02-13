@@ -1,4 +1,5 @@
-﻿using Championship_Control_System.Utitlies;
+﻿using Championship_Control_System.Models;
+using Championship_Control_System.Utitlies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -30,16 +31,28 @@ namespace Championship_Control_System.Areas.Admin.Controllers
 
         public async Task<IActionResult> Create(CancellationToken cancellationToken)
         {
-            
-            var teams = await _teamRepository.GetAsync(tracked: false, cancellationToken: cancellationToken);
 
-            var createCoachVM = new CreateCoachVM
-            {
-                Teams = teams.Select(t => new SelectListItem
+            var allTeams = await _teamRepository.GetAsync(tracked: false, cancellationToken: cancellationToken);
+            var allCoaches = await _coachRepository.GetAsync(tracked: false, cancellationToken: cancellationToken);
+
+            var takenTeamIds = allCoaches
+                .Where(c => c.TeamId != null)
+                .Select(c => c.TeamId)
+                .ToList();
+
+            var availableTeams = allTeams
+                .Where(t => !takenTeamIds.Contains(t.TeamId))
+                .Select(t => new SelectListItem
                 {
                     Value = t.TeamId.ToString(),
                     Text = t.TeamName
-                })
+                });
+
+
+            var createCoachVM = new CreateCoachVM
+            {
+                Teams = availableTeams
+
             };
 
             return View(createCoachVM);
@@ -50,13 +63,21 @@ namespace Championship_Control_System.Areas.Admin.Controllers
         {
             if (!ModelState.IsValid)
             {
-                var teams = await _teamRepository.GetAsync(tracked: false, cancellationToken: cancellationToken);
+                var allTeams = await _teamRepository.GetAsync(tracked: false, cancellationToken: cancellationToken);
+                var allCoaches = await _coachRepository.GetAsync(tracked: false, cancellationToken: cancellationToken);
 
-                createCoachVM.Teams = teams.Select(t => new SelectListItem
-                {
-                    Value = t.TeamId.ToString(),
-                    Text = t.TeamName
-                });
+                var takenTeamIds = allCoaches
+                    .Where(c => c.TeamId != null)
+                    .Select(c => c.TeamId)
+                    .ToList();
+
+                createCoachVM.Teams = allTeams
+                    .Where(t => !takenTeamIds.Contains(t.TeamId))
+                    .Select(t => new SelectListItem
+                    {
+                        Value = t.TeamId.ToString(),
+                        Text = t.TeamName
+                    });
 
                 return View(createCoachVM);
             }
@@ -70,7 +91,7 @@ namespace Championship_Control_System.Areas.Admin.Controllers
                     : null
             };
 
-          
+
             if (createCoachVM.ImageFile is not null && createCoachVM.ImageFile.Length > 0)
             {
                 var fileName = Guid.NewGuid().ToString() + Path.GetExtension(createCoachVM.ImageFile.FileName);
@@ -103,26 +124,37 @@ namespace Championship_Control_System.Areas.Admin.Controllers
 
             if (coach is null) return NotFound();
 
-            var teams = await _teamRepository.GetAsync(tracked: false, cancellationToken: cancellationToken);
+            var allTeams = await _teamRepository.GetAsync(tracked: false, cancellationToken: cancellationToken);
+            var allCoaches = await _coachRepository.GetAsync(tracked: false, cancellationToken: cancellationToken);
+
+
+            var takenTeamIds = allCoaches
+                .Where(c => c.TeamId != null && c.TeamId != coach.TeamId) // <--- هنا التريك
+                .Select(c => c.TeamId)
+                .ToList();
+
+            var availableTeams = allTeams
+                .Where(t => !takenTeamIds.Contains(t.TeamId))
+                .Select(t => new SelectListItem
+                {
+                    Value = t.TeamId.ToString(),
+                    Text = t.TeamName,
+                    Selected = t.TeamId == coach.TeamId // تحديد الفريق الحالي
+                });
 
             var updateCoachVM = new UpdateCoachVM
             {
                 CoachId = coach.CoachId,
                 Name = coach.Name,
-                BirthDate = coach.BirthData.HasValue ? coach.BirthData.Value.ToDateTime(TimeOnly.MinValue): (DateTime?)null,
-
+                BirthDate = coach.BirthData.HasValue ? coach.BirthData.Value.ToDateTime(TimeOnly.MinValue) : (DateTime?)null,
                 TeamId = coach.TeamId,
                 CurrentImg = coach.Img,
-                Teams = teams.Select(t => new SelectListItem
-                {
-                    Value = t.TeamId.ToString(),
-                    Text = t.TeamName,
-                    Selected = (t.TeamId == coach.TeamId)
-                })
+                Teams = availableTeams
             };
 
             return View(updateCoachVM);
         }
+        
 
 
         [HttpPost]
@@ -131,20 +163,25 @@ namespace Championship_Control_System.Areas.Admin.Controllers
            
             if (!ModelState.IsValid)
             {
-                var teams = await _teamRepository.GetAsync(tracked: false, cancellationToken: cancellationToken);
+                var allTeams = await _teamRepository.GetAsync(tracked: false, cancellationToken: cancellationToken);
+                var allCoaches = await _coachRepository.GetAsync(tracked: false, cancellationToken: cancellationToken);
 
-                updateCoachVM.Teams = teams.Select(t => new SelectListItem
-                {
-                    Value = t.TeamId.ToString(),
-                    Text = t.TeamName,
-                    Selected = (t.TeamId == updateCoachVM.TeamId)
-                });
+                var takenTeamIds = allCoaches
+                    .Where(c => c.TeamId != null && c.TeamId != updateCoachVM.TeamId)
+                    .Select(c => c.TeamId)
+                    .ToList();
 
-                // keep current image displayed
-                var coach = await _coachRepository.GetOneAsync(c => c.CoachId == updateCoachVM.CoachId,tracked: false,
-                    cancellationToken: cancellationToken);
+                updateCoachVM.Teams = allTeams
+                    .Where(t => !takenTeamIds.Contains(t.TeamId))
+                    .Select(t => new SelectListItem
+                    {
+                        Value = t.TeamId.ToString(),
+                        Text = t.TeamName,
+                        Selected = t.TeamId == updateCoachVM.TeamId
+                    });
 
-                updateCoachVM.CurrentImg = coach?.Img;
+                var coachForImg = await _coachRepository.GetOneAsync(c => c.CoachId == updateCoachVM.CoachId, tracked: false, cancellationToken: cancellationToken);
+                updateCoachVM.CurrentImg = coachForImg?.Img;
 
                 return View(updateCoachVM);
             }

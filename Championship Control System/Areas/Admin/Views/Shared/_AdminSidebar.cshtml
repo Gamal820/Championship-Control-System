@@ -102,38 +102,6 @@
 
             @if (User.IsInRole(SD.SuperAdminRole))
             {
-                <li class="nav-header">Stats & Standings</li>
-
-                <li class="nav-item">
-                    <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Standing" ? "active" : "")" asp-controller="Standing" asp-action="Index">
-                        <i class="bi bi-list-ol"></i>
-                        <span>League Standings</span>
-                    </a>
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Statistics" ? "active" : "")" asp-controller="Statistics" asp-action="Index">
-                        <i class="bi bi-bar-chart-line"></i>
-                        <span>Top Scorers & Assists</span>
-                    </a>
-                </li>
-
-                <li class="nav-header">Ticketing System</li>
-
-                <li class="nav-item">
-                    <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Ticket" ? "active" : "")" asp-controller="Ticket" asp-action="Index">
-                        <i class="bi bi-ticket-perforated"></i>
-                        <span>Manage Tickets</span>
-                    </a>
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Booking" ? "active" : "")" asp-controller="Booking" asp-action="Index">
-                        <i class="bi bi-cart-check"></i>
-                        <span>Fan Bookings</span>
-                    </a>
-                </li>
-
                 <li class="nav-header">Administration</li>
 
                 <li class="nav-item">
@@ -143,6 +111,16 @@
                     </a>
                 </li>
             }
+            <li class="nav-item mt-3">
+                <hr class="dropdown-divider bg-light opacity-25 mx-3">
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link text-warning" asp-area="Customer" asp-controller="Home" asp-action="Index" target="_blank">
+                    <i class="bi bi-globe"></i> <span>Go to Website</span>
+                    <i class="bi bi-box-arrow-up-right ms-auto small"></i>
+                </a>
+            </li>
 
         </ul>
     </div>

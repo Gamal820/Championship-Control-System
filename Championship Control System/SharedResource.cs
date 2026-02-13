@@ -1,3 +1,3 @@
-﻿internal class SharedResource
+﻿public class SharedResource
 {
 }

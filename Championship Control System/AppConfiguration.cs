@@ -47,6 +47,7 @@ namespace Championship_Control_System
             services.AddScoped<IRepository<Player>, Repository<Player>>();
             services.AddScoped<IRepository<Match>, Repository<Match>>();
             services.AddScoped<IRepository<MatchEvent>, Repository<MatchEvent>>();
+            services.AddScoped<IRepository<TeamStanding>, Repository<TeamStanding>>();
 
 
             services.AddScoped<IDBInitializer, DBInitializer>();

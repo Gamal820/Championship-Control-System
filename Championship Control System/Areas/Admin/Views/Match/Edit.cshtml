@@ -29,10 +29,10 @@
                                     <div class="col-md-6 mb-3">
                                         <label asp-for="Status" class="form-label fw-bold text-center w-100">Current Status</label>
                                         <select asp-for="Status" class="form-select text-center fw-bold">
-                                            <option value="Upcoming">Upcoming (Not Started)</option>
-                                            <option value="Live">Live (Playing Now)</option>
-                                            <option value="Finished" class="text-success">Finished (Calculate Points)</option>
-                                            <option value="Postponed" class="text-danger">Postponed</option>
+                                            <option value="@MatchStatus.Scheduled">Upcoming (Not Started)</option>
+                                            <option value="@MatchStatus.Live">Live (Playing Now)</option>
+                                            <option value="@MatchStatus.Completed" class="text-success">Finished (Calculate Points)</option>
+                                            <option value="@MatchStatus.Postponed" class="text-danger">Postponed</option>
                                         </select>
                                         <small class="text-muted d-block text-center mt-1">Select <b>"Finished"</b> to update League Table automatically.</small>
                                     </div>

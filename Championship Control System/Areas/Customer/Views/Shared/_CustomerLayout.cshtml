@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿@using Championship_Control_System.Utitlies
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -44,6 +45,7 @@
                 color: #ffca28 !important;
             }
 
+        /* كود إخفاء شريط جوجل */
         .goog-te-banner-frame.skiptranslate, .goog-te-banner-frame {
             display: none !important;
         }
@@ -67,11 +69,6 @@
         .goog-te-gadget-icon, iframe.skiptranslate {
             display: none !important;
         }
-
-        body[style*="direction: rtl"] .navbar-nav.ms-auto {
-            margin-right: auto !important;
-            margin-left: 0 !important;
-        }
     </style>
 </head>
 <body>
@@ -82,7 +79,7 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
+                <ul class="navbar-nav ms-auto align-items-center">
                     <li class="nav-item"><a class="nav-link" href="/Customer/Home">Home</a></li>
                     <li class="nav-item"><a class="nav-link" href="/Customer/Match">Matches</a></li>
                     <li class="nav-item"><a class="nav-link" href="/Customer/Standing">Standings</a></li>
@@ -99,13 +96,33 @@
                         </ul>
                     </li>
 
-                    <li class="nav-item"><a class="nav-link" href="/Customer/Ticket/MyTickets">MyTickets</a></li>
-                    @if (User.IsInRole(SD.SuperAdminRole) || User.IsInRole(SD.TournamentManagerRole) || User.IsInRole(SD.TeamManagerRole))
+                    @if (User.Identity.IsAuthenticated)
                     {
-                        <li class="nav-item ms-lg-2">
-                            <a class="btn btn-warning btn-sm fw-bold text-dark mt-lg-1" asp-area="Admin" asp-controller="Dashboard" asp-action="Index">
-                                <i class="fa-solid fa-user-shield me-1"></i> Dashboard
-                            </a>
+                        <li class="nav-item"><a class="nav-link" href="/Customer/Ticket/MyTickets">MyTickets</a></li>
+
+                        @if (User.IsInRole(SD.SuperAdminRole) || User.IsInRole(SD.TournamentManagerRole) || User.IsInRole(SD.TeamManagerRole))
+                        {
+                            <li class="nav-item ms-lg-2">
+                                <a class="btn btn-warning btn-sm fw-bold text-dark" asp-area="Admin" asp-controller="Dashboard" asp-action="Index">
+                                    <i class="fa-solid fa-user-shield me-1"></i> Dashboard
+                                </a>
+                            </li>
+                        }
+
+                        @* التعديل هنا: استخدمنا asp-controller و asp-action *@
+                        <li class="nav-item ms-lg-3">
+                            <form class="form-inline" asp-area="Identity" asp-controller="Account" asp-action="Logout" method="post">
+                                <button type="submit" class="btn btn-danger btn-sm fw-bold">Logout</button>
+                            </form>
+                        </li>
+                    }
+                    else
+                    {
+                        <li class="nav-item ms-lg-3">
+                            <a class="btn btn-outline-light btn-sm me-2" href="/Identity/Account/Login">Login</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="btn btn-warning btn-sm fw-bold text-dark" href="/Identity/Account/Register">Sign Up</a>
                         </li>
                     }
                 </ul>

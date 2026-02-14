@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Championship_Control_System.Enums;
+using System;
 using System.Collections.Generic;
 
 namespace Championship_Control_System.Models;
@@ -17,7 +18,7 @@ public partial class Match
 
     public decimal? TicketPrice { get; set; }
 
-    public string? Status { get; set; }
+    public MatchStatus Status { get; set; }
 
     public int? StadiumId { get; set; }
 

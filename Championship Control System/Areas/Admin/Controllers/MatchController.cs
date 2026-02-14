@@ -1,8 +1,10 @@
-﻿using Championship_Control_System.Models;
+﻿using Championship_Control_System.Hubs;
+using Championship_Control_System.Models;
 using Championship_Control_System.Repositories.IRepositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,19 +22,22 @@ namespace Championship_Control_System.Areas.Admin.Controllers
         private readonly IRepository<Stadium> _stadiumRepository;
         private readonly IRepository<Championship> _championshipRepository;
         private readonly IRepository<TeamStanding> _standingRepo;
+        private readonly IHubContext<MatchHub> _hubContext;
 
         public MatchController(
             IRepository<Match> matchRepository,
             IRepository<Team> teamRepository,
             IRepository<Stadium> stadiumRepository,
             IRepository<Championship> championshipRepository,
-            IRepository<TeamStanding> standingRepo)
+            IRepository<TeamStanding> standingRepo,
+            IHubContext<MatchHub> hubContext)
         {
             _matchRepository = matchRepository;
             _teamRepository = teamRepository;
             _stadiumRepository = stadiumRepository;
             _championshipRepository = championshipRepository;
             _standingRepo = standingRepo;
+            _hubContext = hubContext;
         }
 
         public async Task<IActionResult> Index(CancellationToken cancellationToken)
@@ -123,12 +128,19 @@ namespace Championship_Control_System.Areas.Admin.Controllers
                 matchToUpdate.ChampionshipId = match.ChampionshipId;
                 matchToUpdate.Status = match.Status;
 
-                if (match.Status == "Finished" && existingMatch.Status != "Finished")
+                if (match.Status == MatchStatus.Completed && existingMatch.Status != MatchStatus.Completed)
                 {
                     await UpdateStandings(matchToUpdate);
                 }
 
                 await _matchRepository.CommitAsync(cancellationToken);
+                await _hubContext.Clients.All.SendAsync("ReceiveMatchUpdate", new
+                {
+                    matchId = match.MatchId,
+                    homeGoals = match.HomeGoals,
+                    awayGoals = match.AwayGoals,
+                    newStatus = match.Status.ToString()
+                });
                 TempData["Success"] = "Match updated successfully.";
                 return RedirectToAction(nameof(Index));
             }
@@ -227,6 +239,7 @@ namespace Championship_Control_System.Areas.Admin.Controllers
             var championships = await _championshipRepository.GetAsync(tracked: false, cancellationToken: cancellationToken) ?? new List<Championship>();
             ViewBag.Championships = new SelectList(championships, "ChampionshipId", "ChampionshipName", match?.ChampionshipId);
         }
+
 
     }
 }

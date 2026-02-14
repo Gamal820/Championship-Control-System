@@ -14,7 +14,7 @@
             Live results, accurate statistics, and easy ticket booking.
         </p>
 
-        <a href="#" class="btn btn-warning btn-lg fw-bold">
+        <a href="/Customer/Ticket" class="btn btn-warning btn-lg fw-bold">
             Book Your Ticket Now
         </a>
     </div>
@@ -24,7 +24,7 @@
 <div class="row">
 
     <!-- ================= TODAY MATCHES ================= -->
-    <div class="col-md-8">
+    <div class="col-md-12">
 
         <h4 class="mb-3">
             <i class="bi bi-clock text-danger"></i>
@@ -46,18 +46,30 @@
                             <h6>@match.HomeTeam?.TeamName</h6>
                         </div>
 
-                        <!-- Score -->
-                        <div class="text-center">
-                            <span class="badge bg-danger mb-2">
-                                @match.Status
-                            </span>
+                        <!-- تعديل الـ Badge -->
+                        <span id="status-badge-@match.MatchId"
+                              class="badge mb-2 @(match.Status == MatchStatus.Live ? "bg-danger pulse-animation" : (match.Status == MatchStatus.Scheduled ? "bg-primary" : "bg-secondary"))"
+                              data-match-time="@match.MatchDate.Value.ToString("yyyy-MM-ddTHH:mm:ss")">
+                            @if (match.Status == MatchStatus.Live)
+                            {
+                                <text>LIVE</text>
+                            }
+                            else if (match.Status == MatchStatus.Scheduled)
+                            {
 
-                            <h4 class="fw-bold">
-                                @(match.HomeGoals ?? 0)
-                                -
-                                @(match.AwayGoals ?? 0)
-                            </h4>
-                        </div>
+                                @match.MatchDate.Value.ToString("hh:mm tt")
+                            }
+                            else
+                            {
+
+                                <text>Finished</text>
+                            }
+                        </span>
+
+                        <!-- تعديل الـ Score -->
+                        <h4 class="fw-bold" id="score-@match.MatchId">
+                            @(match.HomeGoals ?? 0) - @(match.AwayGoals ?? 0)
+                        </h4>
 
                         <!-- Away Team -->
                         <div class="text-center" style="width:40%">
@@ -80,65 +92,79 @@
 
     </div>
 
-
-    <!-- ================= LEAGUE STANDINGS ================= -->
-    <div class="col-md-4">
-
-        <h4 class="mb-3">
-            <i class="bi bi-list-ol text-primary"></i>
-            League Standings
-        </h4>
-
-        <div class="card shadow-sm">
-            <div class="card-body p-0">
-
-                <table class="table table-striped mb-0 text-center">
-                    <thead class="table-light">
-                        <tr>
-                            <th>#</th>
-                            <th>Team</th>
-                            <th>Played</th>
-                            <th>Points</th>
-                        </tr>
-                    </thead>
-
-                    <tbody>
-                        @{
-                            int rank = 1;
-                        }
-
-                        @if (standings != null)
-                        {
-                            foreach (var team in standings)
-                            {
-                                <tr>
-                                    <td>@rank</td>
-                                    <td>@team.TeamName</td>
-                                    <td>@team.Played</td>
-                                    <td class="fw-bold">
-                                        @team.Points
-                                    </td>
-                                </tr>
-
-                                rank++;
-                            }
-                        }
-                        else
-                        {
-                            <tr>
-                                <td colspan="4">
-                                    No standings available.
-                                </td>
-                            </tr>
-                        }
-
-                    </tbody>
-
-                </table>
-
-            </div>
-        </div>
-
-    </div>
-
 </div>
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
+
+    <script>
+        // تصحيح الاسم هنا لـ signalR
+        const connection = new signalR.HubConnectionBuilder()
+            .withUrl("/matchHub")
+            .withAutomaticReconnect()
+            .build();
+
+        connection.on("ReceiveMatchUpdate", function (data) {
+            console.log("Update received:", data); // عشان تتأكد في الـ Console إن البيانات وصلت
+
+            const scoreElement = document.getElementById("score-" + data.matchId);
+            if (scoreElement) {
+                scoreElement.innerText = data.homeGoals + " - " + data.awayGoals;
+                scoreElement.style.color = "red";
+                setTimeout(() => { scoreElement.style.color = "black"; }, 2000);
+            }
+
+            const badge = document.getElementById("status-badge-" + data.matchId);
+            if (badge) {
+                if (data.newStatus === "Live") {
+                    badge.className = "badge bg-danger mb-2 pulse-animation";
+                    badge.innerText = "LIVE";
+                } else if (data.newStatus === "Completed") {
+                    badge.className = "badge bg-secondary mb-2";
+                    badge.innerText = "Finished";
+                }
+            }
+        });
+
+        connection.start().then(() => console.log("SignalR Connected!")).catch(err => console.error(err));
+
+        // التايمر اللي بيقلب الماتش Live لوحده
+        setInterval(function() {
+            const now = new Date();
+            document.querySelectorAll('[id^="status-badge-"]').forEach(badge => {
+                const matchTimeStr = badge.getAttribute('data-match-time');
+                if (matchTimeStr) {
+                    const matchTime = new Date(matchTimeStr);
+                    // لو ميعاده جه وهو لسه مش لايف ومش منتهي
+                    if (now >= matchTime && badge.innerText !== "LIVE" && !badge.innerText.includes("Finished")) {
+                        badge.className = "badge bg-danger mb-2 pulse-animation";
+                        badge.innerHTML = "LIVE";
+                    }
+                }
+            });
+        }, 10000);
+    </script>
+
+    <style>
+        .pulse-animation {
+            animation: pulse-red 2s infinite;
+            box-shadow: 0 0 0 0 rgba(220, 53, 69, 0.7);
+        }
+
+        @@keyframes pulse-red {
+            0% {
+                transform: scale(0.95);
+                box-shadow: 0 0 0 0 rgba(220, 53, 69, 0.7);
+            }
+
+            70% {
+                transform: scale(1);
+                box-shadow: 0 0 0 10px rgba(220, 53, 69, 0);
+            }
+
+            100% {
+                transform: scale(0.95);
+                box-shadow: 0 0 0 0 rgba(220, 53, 69, 0);
+            }
+        }
+    </style>
+}

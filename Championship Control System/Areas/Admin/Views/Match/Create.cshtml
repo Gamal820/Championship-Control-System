@@ -16,7 +16,7 @@
                         <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
 
                         <div class="row">
-                            <div class="col-md-6 mb-3">
+                            <div class="col-md-4 mb-3">
                                 <label asp-for="ChampionshipId" class="form-label fw-bold">Championship</label>
                                 <select asp-for="ChampionshipId" class="form-select" asp-items="ViewBag.Championships">
                                     <option value="">-- Select Championship --</option>
@@ -24,10 +24,18 @@
                                 <span asp-validation-for="ChampionshipId" class="text-danger"></span>
                             </div>
 
-                            <div class="col-md-6 mb-3">
+                            <div class="col-md-4 mb-3">
                                 <label asp-for="MatchDate" class="form-label fw-bold">Date & Time</label>
                                 <input asp-for="MatchDate" class="form-control" type="datetime-local" />
                                 <span asp-validation-for="MatchDate" class="text-danger"></span>
+                            </div>
+
+                            <div class="col-md-4 mb-3">
+                                <label asp-for="Status" class="form-label fw-bold">Match Status</label>
+                                <select asp-for="Status" class="form-select"
+                                        asp-items="Html.GetEnumSelectList<MatchStatus>()">
+                                </select>
+                                <span asp-validation-for="Status" class="text-danger"></span>
                             </div>
                         </div>
 

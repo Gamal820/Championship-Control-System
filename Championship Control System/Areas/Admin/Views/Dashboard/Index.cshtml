@@ -1,0 +1,171 @@
+﻿@model IEnumerable<Championship_Control_System.Models.Match>
+
+@{
+    ViewData["Title"] = "Admin Dashboard";
+}
+
+<!-- Page Heading -->
+<div class="d-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800 fw-bold text-primary">Admin Dashboard</h1>
+    <a asp-controller="Match" asp-action="Index" class="btn btn-primary shadow-sm">
+        <i class="bi bi-plus-lg me-1"></i> New Match
+    </a>
+</div>
+
+<!-- Stats Cards Row -->
+<div class="row">
+    <!-- Total Championships -->
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-0 border-start border-primary border-4 shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1 small fw-bold">Tournaments</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">@ViewBag.TotalChampionships</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="bi bi-award fs-2 text-gray-300 opacity-50"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Total Teams -->
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-0 border-start border-success border-4 shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-success text-uppercase mb-1 small fw-bold">Teams</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">@ViewBag.TotalTeams</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="bi bi-shield-shaded fs-2 text-gray-300 opacity-50"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Total Tickets Sold -->
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-0 border-start border-info border-4 shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-info text-uppercase mb-1 small fw-bold">Tickets Sold</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">@ViewBag.TotalTickets</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="bi bi-ticket-perforated fs-2 text-gray-300 opacity-50"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Total Revenue -->
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-0 border-start border-warning border-4 shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-warning text-uppercase mb-1 small fw-bold">Revenue</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">$@ViewBag.TotalRevenue.ToString("N2")</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="bi bi-cash-stack fs-2 text-gray-300 opacity-50"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Match Analysis Chart -->
+    <div class="col-lg-4 mb-4">
+        <div class="card shadow border-0 h-100">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary fw-bold">Matches Analysis</h6>
+            </div>
+            <div class="card-body">
+                <canvas id="matchStatusChart" height="300"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Upcoming Matches Table -->
+    <div class="col-lg-8 mb-4">
+        <div class="card shadow border-0 h-100">
+            <div class="card-header py-3 d-flex justify-content-between align-items-center">
+                <h6 class="m-0 font-weight-bold text-primary fw-bold">Upcoming Fixtures</h6>
+                <a asp-controller="Match" asp-action="Index" class="btn btn-sm btn-outline-primary">View All</a>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead>
+                            <tr>
+                                <th class="ps-3 small">Match</th>
+                                <th class="text-center small">League</th>
+                                <th class="text-center small">Date & Time</th>
+                                <th class="text-center small">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var match in Model)
+                            {
+                                <tr>
+                                    <td class="ps-3">
+                                        <div class="d-flex align-items-center">
+                                            <span class="fw-bold small text-truncate" style="max-width: 100px;">@match.HomeTeam?.TeamName</span>
+                                            <span class="mx-2 text-muted">vs</span>
+                                            <span class="fw-bold small text-truncate" style="max-width: 100px;">@match.AwayTeam?.TeamName</span>
+                                        </div>
+                                    </td>
+                                    <td class="text-center small">@match.Championship?.ChampionshipName</td>
+                                    <td class="text-center">
+                                        <div class="small">@match.MatchDate?.ToString("dd/MM/yyyy")</div>
+                                        <div class="text-muted" style="font-size: 0.75rem;">@match.MatchDate?.ToString("hh:mm tt")</div>
+                                    </td>
+                                    <td class="text-center">
+                                        <a asp-controller="Match" asp-action="Edit" asp-route-id="@match.MatchId" class="btn btn-sm btn-light border">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // الرسم البياني لحالة المباريات
+        const ctx = document.getElementById('matchStatusChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Completed', 'Scheduled', 'Live'],
+                datasets: [{
+                    data: [@string.Join(",", ViewBag.MatchStatusData)],
+                    backgroundColor: ['#198754', '#0d6efd', '#dc3545'],
+                    hoverOffset: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'bottom' }
+                }
+            }
+        });
+    </script>
+}

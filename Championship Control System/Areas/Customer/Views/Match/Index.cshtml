@@ -1,86 +1,87 @@
 ﻿@model IEnumerable<Championship_Control_System.Models.Match>
+@using Championship_Control_System.Enums
 
 @{
     ViewData["Title"] = "Match Schedule";
     var filter = ViewBag.Filter as string ?? "All";
 }
 
-<h2 class="text-primary fw-bold mb-4">
-    Match Schedule
-</h2>
+<h2 class="text-primary fw-bold mb-4">Match Schedule</h2>
 
 <!-- FILTER BUTTONS -->
-<div class="mb-4">
+<div class="mb-4 d-flex gap-2">
+    <a asp-action="Index" asp-route-filter="All"
+       class="btn @(filter == "All" ? "btn-primary" : "btn-outline-primary") shadow-sm">All</a>
 
-    <a asp-action="Index"
-       asp-route-filter="All"
-       class="btn @(filter=="All"?"btn-primary":"btn-outline-primary")">
-        All
-    </a>
+    <a asp-action="Index" asp-route-filter="Today"
+       class="btn @(filter == "Today" ? "btn-primary" : "btn-outline-primary") shadow-sm">Today</a>
 
-    <a asp-action="Index"
-       asp-route-filter="Today"
-       class="btn @(filter=="Today"?"btn-primary":"btn-outline-primary")">
-        Today
-    </a>
-
-    <a asp-action="Index"
-       asp-route-filter="Upcoming"
-       class="btn @(filter=="Upcoming"?"btn-primary":"btn-outline-primary")">
-        Upcoming
-    </a>
-
+    <a asp-action="Index" asp-route-filter="Upcoming"
+       class="btn @(filter == "Upcoming" ? "btn-primary" : "btn-outline-primary") shadow-sm">Upcoming</a>
 </div>
 
-
-@foreach (var match in Model)
+@if (!Model.Any())
 {
-    <div class="card mb-3 shadow-sm p-3">
+    <div class="alert alert-info">No matches found for this selection.</div>
+}
+else
+{
+    @foreach (var match in Model)
+    {
+        <div class="card mb-3 shadow-sm border-0">
+            <div class="card-body">
+                <div class="row align-items-center text-center">
 
-        <div class="row align-items-center text-center">
+                    <!-- HOME TEAM -->
+                    <div class="col-md-4 col-5">
+                        <img src="@(string.IsNullOrEmpty(match.HomeTeam?.Logo) ? "/images/default-team.png" : match.HomeTeam.Logo)"
+                             width="60" height="60" style="object-fit:contain" class="mb-2" />
+                        <h6 class="fw-bold">@match.HomeTeam?.TeamName</h6>
+                    </div>
 
-            <!-- HOME -->
-            <div class="col-md-4">
-                <img src="@match.HomeTeam?.Logo"
-                     width="60" height="60"
-                     style="object-fit:contain" />
+                    <!-- SCORE & STATUS -->
+                    <div class="col-md-4 col-2">
+                        @if (match.Status == MatchStatus.Scheduled)
+                        {
+                            <h4 class="fw-bold">VS</h4>
+                        }
+                        else
+                        {
+                            <h3 class="fw-bold mb-0">
+                                @(match.HomeGoals ?? 0) - @(match.AwayGoals ?? 0)
+                            </h3>
+                        }
 
-                <h5 class="fw-bold mt-2">
-                    @match.HomeTeam?.TeamName
-                </h5>
-            </div>
+                        <div class="badge @GetStatusClass(match.Status) mb-1">
+                            @match.Status
+                        </div>
 
-            <!-- SCORE -->
-            <div class="col-md-4">
+                        <div class="text-muted small">
+                            <i class="bi bi-clock"></i> @match.MatchDate?.ToString("dd MMM | hh:mm tt")
+                        </div>
+                    </div>
 
-                <h4 class="fw-bold">
-                    @(match.HomeGoals ?? 0)
-                    -
-                    @(match.AwayGoals ?? 0)
-                </h4>
+                    <!-- AWAY TEAM -->
+                    <div class="col-md-4 col-5">
+                        <img src="@(string.IsNullOrEmpty(match.AwayTeam?.Logo) ? "/images/default-team.png" : match.AwayTeam.Logo)"
+                             width="60" height="60" style="object-fit:contain" class="mb-2" />
+                        <h6 class="fw-bold">@match.AwayTeam?.TeamName</h6>
+                    </div>
 
-                <span class="text-danger">
-                    @match.Status
-                </span>
-
-                <div class="text-muted">
-                    @match.MatchDate?.ToString("hh:mm tt")
                 </div>
-
             </div>
-
-            <!-- AWAY -->
-            <div class="col-md-4">
-                <img src="@match.AwayTeam?.Logo"
-                     width="60" height="60"
-                     style="object-fit:contain" />
-
-                <h5 class="fw-bold mt-2">
-                    @match.AwayTeam?.TeamName
-                </h5>
-            </div>
-
         </div>
+    }
+}
 
-    </div>
+@functions {
+    // وظيفة مساعدة لتلوين حالة المباراة
+    public string GetStatusClass(MatchStatus status) => status switch
+    {
+        MatchStatus.Live => "bg-danger",
+        MatchStatus.Completed => "bg-secondary",
+        MatchStatus.Scheduled => "bg-success",
+        MatchStatus.Postponed => "bg-warning text-dark",
+        _ => "bg-dark"
+    };
 }

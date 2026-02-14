@@ -23,7 +23,7 @@ namespace Championship_Control_System.Areas.Identity.Controllers
             _emailSender = emailSender;
             _applicationUserOTPRepository = applicationUserOTPRepository;
         }
-
+        [HttpPost]
         public async Task<IActionResult> Logout()
         {
             await _signInManager.SignOutAsync();

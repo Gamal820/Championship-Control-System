@@ -19,13 +19,12 @@ namespace Championship_Control_System.Areas.Customer.Controllers
             _matchRepository = matchRepository;
         }
 
-        public async Task<IActionResult> Index(
-            string filter = "All",
-            CancellationToken cancellationToken = default)
+        public async Task<IActionResult> Index(string filter = "All", CancellationToken cancellationToken = default)
         {
-            var today = DateTime.Today;
+            var today = DateTime.Today; 
+            var tomorrow = today.AddDays(1);
 
-            var matches = await _matchRepository.GetAsync(
+            var allMatches = await _matchRepository.GetAsync(
                 include: q => q
                     .Include(m => m.HomeTeam)
                     .Include(m => m.AwayTeam)
@@ -35,24 +34,22 @@ namespace Championship_Control_System.Areas.Customer.Controllers
                 cancellationToken: cancellationToken
             );
 
-            // ===== Filter =====
-            matches = filter switch
+            var filteredMatches = filter switch
             {
-                "Today" => matches
-                    .Where(m => m.MatchDate.HasValue &&
-                                m.MatchDate.Value.Date == today)
-                    .ToList(),
+                "Today" => allMatches.Where(m => m.MatchDate.HasValue &&
+                                                m.MatchDate.Value.Date == today),
 
-                "Upcoming" => matches
-                    .Where(m => m.MatchDate > today)
-                    .ToList(),
+                "Upcoming" => allMatches.Where(m => m.MatchDate.HasValue &&
+                                                   m.MatchDate.Value.Date >= today),
 
-                _ => matches
+                "Live" => allMatches.Where(m => m.Status == MatchStatus.Live),
+
+                _ => allMatches 
             };
 
             ViewBag.Filter = filter;
 
-            return View(matches.OrderBy(m => m.MatchDate));
+            return View(filteredMatches.OrderBy(m => m.MatchDate));
         }
     }
 }

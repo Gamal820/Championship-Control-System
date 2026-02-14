@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using LazZiya.ExpressLocalization;
 using System.Globalization; 
 using Stripe;
+using Championship_Control_System.Hubs;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -37,9 +38,25 @@ builder.Services.AddControllersWithViews()
     });
 
 builder.Services.AddControllersWithViews();
+
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.LoginPath = "/Identity/Account/Login";
+
+    options.Events.OnRedirectToLogin = context =>
+    {
+        context.Response.Redirect("/Identity/Account/Login");
+        return Task.CompletedTask;
+    };
+});
+
+
+
 //Stripe Settings
 builder.Services.Configure<StripeSettings>(builder.Configuration.GetSection("Stripe"));
 StripeConfiguration.ApiKey = builder.Configuration["Stripe:SecretKey"];
+
+builder.Services.AddSignalR();
 
 var app = builder.Build();
 
@@ -62,9 +79,10 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapStaticAssets();
+
 app.MapControllerRoute(
     name: "default",
     pattern: "{area=Customer}/{controller=Home}/{action=Index}/{id?}")
     .WithStaticAssets();
-
+app.MapHub<MatchHub>("/matchHub");
 app.Run();

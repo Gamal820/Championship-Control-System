@@ -1,104 +1,90 @@
 ﻿@model IEnumerable<Championship_Control_System.Models.Championship>
 
-@{
-    ViewData["Title"] = "League Standings";
-}
-
 <div class="container py-4">
-    <div class="d-flex align-items-center mb-4">
-        <h2 class="fw-bold text-primary"><i class="bi bi-table me-2"></i>League Standings</h2>
+    <div class="mb-5 text-center">
+        <h2 class="fw-bold text-primary display-6">
+            <i class="bi bi-trophy-fill me-2 text-warning"></i>League Standings
+        </h2>
+        <p class="text-muted">Explore rankings across all active championships</p>
     </div>
 
     <div class="row">
         @foreach (var league in Model)
         {
-            <div class="col-md-6 mb-4">
-                <div class="card shadow-sm border-0 h-100">
-                    <div class="card-header bg-white d-flex justify-content-between align-items-center py-3">
+            <div class="col-lg-6 mb-4">
+                <div class="card shadow-sm border-0 h-100 hover-shadow transition">
+                    <div class="card-header bg-white d-flex justify-content-between align-items-center py-3 border-bottom-0">
                         <div class="d-flex align-items-center">
-                            @if (!string.IsNullOrEmpty(league.Logo))
-                            {
-                                <img src="@league.Logo" alt="Logo" class="me-2" style="width: 30px; height: 30px; object-fit: contain;">
-                            }
-                            <h5 class="mb-0 fw-bold">@league.ChampionshipName</h5>
+                            <img src="@(string.IsNullOrEmpty(league.Logo) ? "/images/default-league.png" : $"/images/championships/{league.Logo}")"
+                                 alt="Logo" class="me-2" style="width: 40px; height: 40px; object-fit: contain;">
+                            <h5 class="mb-0 fw-bold text-dark">@league.ChampionshipName</h5>
                         </div>
-                        <button class="btn btn-sm btn-outline-primary rounded-pill"
-                                onclick="location.href='@Url.Action("Details", "Standing", new { area = "Customer", id = league.ChampionshipId })'">
-                            Full Table <i class="bi bi-arrow-right"></i>
-                        </button>
+                        <a asp-action="Details" asp-route-id="@league.ChampionshipId"
+                           class="btn btn-sm btn-primary rounded-pill px-3">
+                            Full Table <i class="bi bi-arrow-right ms-1"></i>
+                        </a>
                     </div>
 
                     <div class="card-body p-0">
-                        <table class="table table-striped mb-0 text-center" style="font-size: 0.9rem;">
-                            <thead class="bg-light">
-                                <tr>
-                                    <th>#</th>
-                                    <th class="text-start">Team</th>
-                                    <th>PL</th>
-                                    <th>GD</th>
-                                    <th>Pts</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @{
-                                    var topTeams = league.TeamStandings
-                                    .Select(t => new
-                                    {
-                                        Standing = t,
-                                        Points = (t.Won * 3) + (t.Draw * 1)
-                                    })
-                                    .OrderByDescending(t => t.Points)
-                                    .ThenByDescending(t => t.Standing.GoalDifference)
-                                    .Take(3) 
-                                    .ToList();
-
-                                    int rank = 1;
-                                }
-
-                                @foreach (var item in topTeams)
-                                {
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0 text-center align-middle">
+                                <thead class="bg-light text-muted small uppercase">
                                     <tr>
-                                        <td class="fw-bold">@rank</td>
-                                        <td class="text-start">
-                                            <div class="d-flex align-items-center">
-                                                <img src="@(item.Standing.Team?.Logo ?? "https://via.placeholder.com/20")"
-                                                     class="rounded-circle me-2" width="20" height="20">
-                                                <span class="fw-semibold">@item.Standing.Team?.TeamName</span>
-                                            </div>
-                                        </td>
-                                        <td>@item.Standing.Played</td>
-                                        <td>
-                                            @if (item.Standing.GoalDifference > 0)
-                                            {
-                                                <span class="text-success">+@item.Standing.GoalDifference</span>
-                                            }
-                                            else if (item.Standing.GoalDifference < 0)
-                                            {
-
-                                                <span class="text-danger">@item.Standing.GoalDifference</span>
-                                            }
-                                            else
-                                            {
-
-                                                <span>0</span>
-                                            }
-                                        </td>
-                                        <td class="fw-bold text-dark">@item.Points</td>
+                                        <th>#</th>
+                                        <th class="text-start">Team</th>
+                                        <th>PL</th>
+                                        <th>GD</th>
+                                        <th class="text-primary">Pts</th>
                                     </tr>
-                                    rank++;
-                                }
-                            </tbody>
-                        </table>
-                    </div>
+                                </thead>
+                                <tbody>
+                                    @{
+                                        var topTeams = league.TeamStandings
+                                        .OrderByDescending(t => (t.Won ?? 0) * 3 + (t.Draw ?? 0))
+                                        .ThenByDescending(t => t.GoalDifference ?? 0)
+                                        .Take(4).ToList();
+                                        int rank = 1;
+                                    }
 
-                    @if (league.TeamStandings.Count > 3)
-                    {
-                        <div class="card-footer bg-white text-center border-0">
-                            <small class="text-muted">... and @(league.TeamStandings.Count - 3) more teams</small>
+                                    @foreach (var item in topTeams)
+                                    {
+                                        <tr>
+                                            <td class="fw-bold text-muted" style="width: 40px;">@rank</td>
+                                            <td class="text-start">
+                                                <div class="d-flex align-items-center">
+                                                    <img src="@(item.Team?.Logo ?? "/images/default-team.png")"
+                                                         class="me-2 rounded-circle" width="24" height="24">
+                                                    <span class="fw-semibold text-truncate" style="max-width: 150px;">@item.Team?.TeamName</span>
+                                                </div>
+                                            </td>
+                                            <td>@(item.Played ?? 0)</td>
+                                            <td>
+                                                <span class="@(item.GoalDifference > 0 ? "text-success" : item.GoalDifference < 0 ? "text-danger" : "")">
+                                                    @(item.GoalDifference > 0 ? "+" : "")@item.GoalDifference
+                                                </span>
+                                            </td>
+                                            <td class="fw-bold text-primary">@((item.Won ?? 0) * 3 + (item.Draw ?? 0))</td>
+                                        </tr>
+                                        rank++;
+                                    }
+                                </tbody>
+                            </table>
                         </div>
-                    }
+                    </div>
                 </div>
             </div>
         }
     </div>
 </div>
+
+<style>
+    .hover-shadow:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 .5rem 1rem rgba(0,0,0,.15) !important;
+        transition: 0.3s;
+    }
+
+    .transition {
+        transition: 0.3s;
+    }
+</style>

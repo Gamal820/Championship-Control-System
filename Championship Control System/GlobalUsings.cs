@@ -4,4 +4,5 @@ global using Championship_Control_System.DataAccess;
 global using Championship_Control_System.Repositories.IRepositories;
 global using Championship_Control_System.Repositories;
 global using Championship_Control_System.Utitlies;
+global using Championship_Control_System.Enums;
 
